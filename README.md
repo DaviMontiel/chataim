@@ -1,11 +1,19 @@
 > # CHATAIM 
-> Diferentes tareas a realizar:
-> 1.    Registro.
-> 2.    Login.
-> 3.    Configuracion de la app/usuario.
-> 4.    Añadir contactos.
-> 5.    Hablar con diferentes contactos.
-> 6.    Subida de ficheros e interpretacion de los mismos.
-> 7.    Creacion de grupos.
-> 8.    Contactos anonimos.
-> 9.    etc.
+> Realizado hasta el 2023/04/24:
+
+> #### Modelo
+> - Modelo Endidad-Relacion.
+> - Modelo Fisico.
+> - Conexion a base de datos Railway o la local.
+
+> #### Vista
+> - Paginas web para la verificacion del correo electronico del usuario.
+> - Animacion de la ventana al aparecer.
+> - Animacion del cover, para pasar al panel de login/register.
+> - Ventana principal de las vista de usuarios empezada.
+
+> #### Controlador
+> Clase controlador general.
+> Clase controlador de imagenes.
+> Clase controlador del lenguaje.
+> Clase para mandar Emails.
