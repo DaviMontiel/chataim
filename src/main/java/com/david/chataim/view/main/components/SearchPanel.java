@@ -21,6 +21,4 @@ public class SearchPanel extends JPanel {
         g2.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(grphcs);
     }//FUN
-	
-	
 }//CLASS

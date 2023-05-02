@@ -14,11 +14,13 @@ import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.david.chataim.controller.events.login.CheckVerificationCode;
-import com.david.chataim.controller.events.login.ControlTfVerificationCode;
-import com.david.chataim.view.components.ButtonOutLine;
+import com.david.chataim.controller.LanguageController;
+import com.david.chataim.controller.events.register.CheckVerificationCode;
+import com.david.chataim.controller.events.register.ControlTfVerificationCode;
+import com.david.chataim.model.Register;
 import com.david.chataim.view.components.MyTextField;
 import com.david.chataim.view.components.PanelRound;
+import com.david.chataim.view.components.button.ButtonOutLine;
 
 public class VerifyCodePanel extends JPanel {
 
@@ -32,7 +34,7 @@ public class VerifyCodePanel extends JPanel {
 	private PanelRound contentPanel;
 	
 
-	public VerifyCodePanel(int code) {
+	public VerifyCodePanel() {
 		setOpaque(false);
 		setLayout(new GridBagLayout());
 		
@@ -46,7 +48,7 @@ public class VerifyCodePanel extends JPanel {
 	    GridBagConstraints gbc_lblTitle = new GridBagConstraints();
 		gbc_lblTitle.gridx = 0;
 		gbc_lblTitle.gridy = 0;
-		lblTitle = new JLabel("Verification Code");
+		lblTitle = new JLabel(LanguageController.getWord(27));
 		lblTitle.setFont(new Font("sansserif", 1, 24));
 		lblTitle.setForeground(new Color(63, 63, 63));
 		contentPanel.add(lblTitle, gbc_lblTitle);
@@ -55,7 +57,7 @@ public class VerifyCodePanel extends JPanel {
 		gbc_lblDdescription.insets = new Insets(5, 0, 0, 0);
 		gbc_lblDdescription.gridx = 0;
 		gbc_lblDdescription.gridy = 1;
-		lblDescription = new JLabel("Check your mail to get verify code");
+		lblDescription = new JLabel(LanguageController.getWord(28));
 		lblDescription.setFont(new Font("sansserif", 0, 11));
 		lblDescription.setForeground(new Color(63, 63, 63));
 		contentPanel.add(lblDescription, gbc_lblDdescription);
@@ -83,16 +85,17 @@ public class VerifyCodePanel extends JPanel {
 		contentPanel.add(panelBtns, gbc_panelBtns);
 		
 		btnOk = new ButtonOutLine();
-		btnOk.setText("OK");
+		btnOk.setText(LanguageController.getWord(29));
 		btnOk.setPreferredSize(new Dimension(100, 32));
 		btnOk.setBackground(new java.awt.Color(18, 138, 62));
-		btnOk.addActionListener(new CheckVerificationCode(tfCode, code));
+		btnOk.setFocusPainted(false);
 		panelBtns.add(btnOk);
 		
 		btnCancel = new ButtonOutLine();
-		btnCancel.setText("CANCEL");
+		btnCancel.setText(LanguageController.getWord(30));
 		btnCancel.setPreferredSize(new Dimension(100, 32));
 		btnCancel.setBackground(new java.awt.Color(192, 25, 25));
+		btnCancel.setFocusPainted(false);
 		panelBtns.add(btnCancel);
 	}//Constructor
 	
@@ -106,7 +109,11 @@ public class VerifyCodePanel extends JPanel {
 	    super.paintComponent(grphcs);
 	}//FUN
 	
+	public void setCheckCodeListener(Register register) {
+		btnOk.addActionListener(new CheckVerificationCode(tfCode, register));
+	}//FUN
+	
 	public void setCloseListener(ActionListener closeListener) {
 		btnCancel.addActionListener(closeListener);
-	}
+	}//FUN
 }//CLASS

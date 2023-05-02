@@ -17,26 +17,28 @@ import com.david.chataim.controller.ColorController;
 import com.david.chataim.controller.Controller;
 import com.david.chataim.controller.ImageController;
 import com.david.chataim.controller.LanguageController;
-import com.david.chataim.view.components.Button;
+import com.david.chataim.controller.events.login.CheckFieldsSingIn;
 import com.david.chataim.view.components.MyPasswordField;
 import com.david.chataim.view.components.MyTextField;
+import com.david.chataim.view.components.button.Button;
+
+import lombok.Getter;
 
 public class LoginPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
 	private JLabel lblTitle;
-	private MyTextField tfEmail;
-	private MyPasswordField tfPasswd;
+	@Getter private MyTextField tfEmail;
+	@Getter private MyPasswordField tfPasswd;
 	private JLabel lblForgotPasswd;
-	
-//	@Setter private float alpha;
 	
 
 	public LoginPanel() {
 		setOpaque(false);
 		setLayout(new GridBagLayout());
 
+		// TITLE
 		GridBagConstraints gbc_lblTitle = new GridBagConstraints();
 		gbc_lblTitle.gridx = 0;
 		gbc_lblTitle.gridy = 0;
@@ -45,6 +47,7 @@ public class LoginPanel extends JPanel {
 		lblTitle.setForeground(ColorController.PRIMARY_COLOR);
 		add(lblTitle, gbc_lblTitle);
 		
+		// FIELDs
 		GridBagConstraints gbc_mtfEmail = new GridBagConstraints();
 		gbc_mtfEmail.insets = new Insets(30, 0, 0, 0);
 		gbc_mtfEmail.gridx = 0;
@@ -65,6 +68,7 @@ public class LoginPanel extends JPanel {
 		tfPasswd.setPreferredSize(new Dimension(350, 40));
 		add(tfPasswd, gbc_mtfPasswd);
 		
+		// FORGOT
 		GridBagConstraints gbc_lblForgotPasswd = new GridBagConstraints();
 		gbc_lblForgotPasswd.insets = new Insets(10, 0, 0, 0);
 		gbc_lblForgotPasswd.gridx = 0;
@@ -83,15 +87,17 @@ public class LoginPanel extends JPanel {
         });
 		add(lblForgotPasswd, gbc_lblForgotPasswd);
 		
-		GridBagConstraints gbc_lblbutton = new GridBagConstraints();
-		gbc_lblbutton.insets = new Insets(20, 0, 0, 0);
-		gbc_lblbutton.gridx = 0;
-		gbc_lblbutton.gridy = 4;
-		Button button = new Button();
-		button.setPreferredSize(new Dimension(250,40));
+		// BTN
+		GridBagConstraints gbc_btn = new GridBagConstraints();
+		gbc_btn.insets = new Insets(20, 0, 0, 0);
+		gbc_btn.gridx = 0;
+		gbc_btn.gridy = 4;
+		Button btnSingIn = new Button();
+		btnSingIn.setPreferredSize(new Dimension(250,40));
+		btnSingIn.addActionListener(new CheckFieldsSingIn(this));
 		
 		// IF IS DB CONECTED SHOW TEXT
-		button.setIcon(new ImageIcon(getClass().getResource(ImageController.GIF_LOADING)));
+		btnSingIn.setIcon(new ImageIcon(getClass().getResource(ImageController.GIF_LOADING)));
 		new Thread() {
 			@Override
 			public void run() {
@@ -99,14 +105,14 @@ public class LoginPanel extends JPanel {
 					try { Thread.sleep(500); }//TRY
 					catch (Exception e) {}//CATCH
 				}//WHILE
-				button.setIcon(null);
-				button.setText(LanguageController.getWord(9));
+				btnSingIn.setIcon(null);
+				btnSingIn.setText(LanguageController.getWord(9));
 			}
 		}.start();
 
-		button.setFocusPainted(false);
-		button.setBackground(new Color(7, 164, 121));
-		button.setForeground(new Color(250, 250, 250));
-  		add(button, gbc_lblbutton);
+		btnSingIn.setFocusPainted(false);
+		btnSingIn.setBackground(new Color(7, 164, 121));
+		btnSingIn.setForeground(new Color(250, 250, 250));
+  		add(btnSingIn, gbc_btn);
 	}//Constructor
 }//CLASS

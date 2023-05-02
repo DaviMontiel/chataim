@@ -17,7 +17,8 @@
 CREATE TABLE app (
 	urlEmailVerificationCodeES VARCHAR(100) NULL,
 	urlEmailVerificationCodeEN VARCHAR(100) NULL,
-	urlVerificationCode VARCHAR(100) NULL
+	urlTermsAndConditionsES VARCHAR(100) NULL,
+	urlTermsAndConditionsEN VARCHAR(100) NULL
 );
 
 CREATE TABLE verification (
@@ -27,20 +28,20 @@ CREATE TABLE verification (
 );
 
 CREATE TABLE credential (
-	id INTEGER AUTO_INCREMENT NOT NULL,
-	email VARCHAR(100) NOT NULL,
-    passwd VARCHAR(100) NOT NULL,
+	email VARCHAR(255) NOT NULL,
+    passwd VARCHAR(50) NOT NULL,
     id_contact INTEGER NOT NULL,
-	CONSTRAINT PRIMARY KEY (id, id_contact)
+	CONSTRAINT PRIMARY KEY (email, id_contact)
 );
 
 CREATE TABLE contact (
     id INTEGER AUTO_INCREMENT NOT NULL,
     name VARCHAR(25) NOT NULL,
     description VARCHAR(255) NULL,
-    image BLOB NULL,
+    image LONGBLOB NULL,
     anonymous BOOLEAN NOT NULL,
-    last_connection TIMESTAMP NOT NULL,
+    lastConnection TIMESTAMP NULL,
+    isConnected BOOLEAN NOT NULL,
     CONSTRAINT PRIMARY KEY (id)
 );
 
@@ -115,15 +116,20 @@ ALTER TABLE contains_ascii ADD CONSTRAINT FOREIGN KEY (id_ascii) REFERENCES asci
 ALTER TABLE contains_ascii ADD CONSTRAINT FOREIGN KEY (id_message) REFERENCES message(id);
 
 
-INSERT INTO app VALUES ("https://chataim.000webhostapp.com/es/emailVerificationCode.html",
-						"https://chataim.000webhostapp.com/en/emailVerificationCode.html",
-						"NULL");
+INSERT INTO app VALUES ("https://h6tkxluzxw8nwqic3crz9c.on.drv.tw/pagina/chataim/es/emailVerificationCode.html",
+						"https://h6tkxluzxw8nwqic3crz9c.on.drv.tw/pagina/chataim/en/emailVerificationCode.html",
+						"https://h6tkxluzxw8nwqic3crz9c.on.drv.tw/pagina/chataim/es/termsAndConditions.html",
+						"https://h6tkxluzxw8nwqic3crz9c.on.drv.tw/pagina/chataim/en/termsAndConditions.html");
 
 					
 					
-# Este comando deshabilita temporalmente la verificación de las características DETERMINISTIC, NO SQL y READS SQL DATA al crear funciones
+# Este comando deshabilita temporalmente la verificaciï¿½n de las caracterï¿½sticas DETERMINISTIC, NO SQL y READS SQL DATA al crear funciones
 SET GLOBAL log_bin_trust_function_creators = 1;
 
+
+/*
+ * FUNCTIONs
+ */
 
 DELIMITER //
 CREATE FUNCTION createVerificationCode(code CHAR(9))
@@ -132,6 +138,44 @@ NOT DETERMINISTIC
 BEGIN
     INSERT INTO verification (code) VALUES (code);
     RETURN LAST_INSERT_ID();
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION createCredential(
+	email VARCHAR(100),
+	passwd VARCHAR(100),
+	id_contact INTEGER
+)
+RETURNS INT
+NOT DETERMINISTIC
+BEGIN
+	INSERT INTO credential (email, passwd, id_contact) VALUES (email, passwd, id_contact);
+    RETURN LAST_INSERT_ID();
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION createContact(
+	name VARCHAR(25),
+	description VARCHAR(255),
+	image LONGBLOB,
+	anonymous BOOLEAN,
+	email VARCHAR(100),
+	passwd VARCHAR(100)
+)
+RETURNS INT
+NOT DETERMINISTIC
+BEGIN
+	DECLARE id INTEGER;
+   
+	INSERT INTO contact (name, description, image, anonymous, lastConnection, isConnected) VALUES (name, description, image, anonymous, NULL, TRUE);
+	
+	SET id = LAST_INSERT_ID();
+    
+    DO createCredential(email, passwd, id);
+   
+	RETURN id;
 END //
 DELIMITER ;
 

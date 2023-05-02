@@ -15,11 +15,10 @@ import com.david.chataim.controller.ColorController;
 import com.david.chataim.controller.Controller;
 import com.david.chataim.controller.ImageController;
 import com.david.chataim.controller.LanguageController;
-import com.david.chataim.controller.events.login.CheckFieldsForSendEmail;
-import com.david.chataim.view.components.Button;
+import com.david.chataim.controller.events.register.CheckFieldsOfRegister;
 import com.david.chataim.view.components.MyPasswordField;
 import com.david.chataim.view.components.MyTextField;
-import com.david.chataim.view.login.LoginFrame;
+import com.david.chataim.view.components.button.Button;
 
 import lombok.Getter;
 
@@ -37,7 +36,7 @@ public class RegisterPanel extends JPanel {
 	private String[] textSaved;
 	
 
-	public RegisterPanel(LoginFrame frame) {
+	public RegisterPanel() {
 		setOpaque(false);
 		setLayout(new GridBagLayout());
 		textSaved = new String[3];
@@ -98,10 +97,10 @@ public class RegisterPanel extends JPanel {
 				}//WHILE
 				btnLoginUp.setIcon(null);
 				btnLoginUp.setText(LanguageController.getWord(5));
-				btnLoginUp.addActionListener(new CheckFieldsForSendEmail(own, frame));
+				btnLoginUp.addActionListener(new CheckFieldsOfRegister(own));
 			}
 		}.start();
-				
+		
 		btnLoginUp.setFocusPainted(false);
 		btnLoginUp.setBackground(new Color(7, 164, 121));
 		btnLoginUp.setForeground(new Color(250, 250, 250));

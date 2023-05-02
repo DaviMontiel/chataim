@@ -9,8 +9,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.david.chataim.view.login.components.Message;
-
 public class Mail {
 
 	final String username = "davidmontielnieto5@gmail.com";
@@ -44,13 +42,9 @@ public class Mail {
 			msg.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(receiverEmail));
 			Transport.send(msg);
 			
-			Controller.s().showMessage(Message.MessageType.SUCCESS, LanguageController.getWord(25));
-			
 			return true;
 		}//TRY
-		catch (Exception e) { Controller.s().showMessage(Message.MessageType.ERROR, LanguageController.getWord(24)); }//CATCH
-		
-		return false;
+		catch (Exception e) { return false; }//CATCH
 	}//Constructor
 	
 	public static class SMTPAuthenticator extends javax.mail.Authenticator {

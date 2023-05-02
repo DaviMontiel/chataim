@@ -2,7 +2,7 @@ package com.david.chataim.controller.events;
 
 import javax.swing.JPanel;
 
-import com.david.chataim.view.login.components.Message;
+import com.david.chataim.view.components.Message;
 
 public class AnimateMessage {
 

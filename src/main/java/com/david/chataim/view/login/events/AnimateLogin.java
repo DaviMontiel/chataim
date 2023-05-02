@@ -9,7 +9,7 @@ import javax.swing.Timer;
 
 import com.david.chataim.controller.Dimens;
 import com.david.chataim.controller.LanguageController;
-import com.david.chataim.view.components.ButtonOutLine;
+import com.david.chataim.view.components.button.ButtonOutLine;
 import com.david.chataim.view.login.LoginFrame;
 import com.david.chataim.view.login.components.CoverPanel;
 import com.david.chataim.view.login.components.LoginPanel;

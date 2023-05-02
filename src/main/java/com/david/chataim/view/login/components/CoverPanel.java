@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 import com.david.chataim.controller.ColorController;
 import com.david.chataim.controller.LanguageController;
-import com.david.chataim.view.components.ButtonOutLine;
+import com.david.chataim.view.components.button.ButtonOutLine;
 import com.david.chataim.view.login.LoginFrame;
 import com.david.chataim.view.login.events.AnimateLogin;
 

@@ -1,5 +1,7 @@
 package com.david.chataim.model;
 
+import java.awt.Image;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,8 +10,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.david.chataim.controller.Controller;
-import com.david.chataim.view.login.components.Message.MessageType;
+import com.david.chataim.controller.ImageController;
+
 
 public class DataBase {
 
@@ -26,6 +28,9 @@ public class DataBase {
 //	private final String URL ="jdbc:mysql://containers-us-west-39.railway.app:6254/railway";
 //	private final String DRIVER ="com.mysql.cj.jdbc.Driver";
 	
+	public static enum APP {
+		URL_EMAIL_VERIFICATION_CODE, URL, URL_TERMS_AND_CODITIONS};
+	
 	
 	public DataBase() {
 		new Thread() {
@@ -39,7 +44,6 @@ public class DataBase {
 					catch (Exception e) {
 						try { Thread.sleep(500); }//TRY
 						catch (InterruptedException e1) {}//CATCH
-						System.out.println(true);
 					}//CATCH
 				}//WHILE
 			}
@@ -59,16 +63,71 @@ public class DataBase {
 		catch (SQLException e) {}//CATCH
 	}//FUN
 	
-	public String getVerificationURL(String lang) {
+	public int existAccount(String email, String passwd) {
 		try {
-			String selectSQL ="SELECT urlEmailVerificationCode"+lang+" FROM app";
+			String selectSQL ="SELECT id_contact FROM credential WHERE email = \""+email+"\"";
+			if (passwd != null) {
+				selectSQL += " AND passwd = \""+passwd+"\"";
+			}//IF
+			
+			Statement st = con.createStatement();
+			
+			ResultSet rs = st.executeQuery(selectSQL);
+			
+			if (rs.next()) {
+				return rs.getInt(1);
+			}//IF
+		} catch (SQLException e) { e.printStackTrace(); }//CATCH
+		
+		return -1;
+	}//IF
+	
+	public Contact getContact(int id) {
+		try {
+			String selectSQL ="SELECT * FROM contact WHERE id = "+id;
 			Statement st = con.createStatement();
 			
 			ResultSet rs = st.executeQuery(selectSQL);
 			rs.next();
+			
+			Image profileImage = null;
+			InputStream isImage = rs.getBinaryStream(4);
+			if (isImage == null) {
+				profileImage = ImageController.getDefaultImageUser();
+			} else {
+				profileImage = ImageController.convertToImage(rs.getBinaryStream(4));				
+			}//IF
+			
+			return new Contact(rs.getInt(1), rs.getString(2), rs.getString(3), profileImage, rs.getBoolean(5), rs.getTimestamp(6));
+		} catch (SQLException e) { e.printStackTrace(); }//CATCH
+		
+		return null;
+	}//FUN
+	
+	public String getFromApp(final APP data, final String lang) {
+		try {
+			String selectSQL ="SELECT ";
+			switch (data) {
+				case URL_EMAIL_VERIFICATION_CODE:
+					selectSQL +="urlEmailVerificationCode";
+					break;
+					
+				case URL_TERMS_AND_CODITIONS:
+					selectSQL +="urlTermsAndConditions";
+					break;
+					
+				default: return null;
+			}//SWITCH
+			
+			selectSQL += lang+" FROM app";
+			
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery(selectSQL);
+			rs.next();
+			
 			return rs.getString(1);
 		}//TRY
-		catch (SQLException e) { Controller.s().showMessage(MessageType.ERROR, "ERROR: Base de datos"); }//CATCH
+		catch (SQLException e) { System.out.println(e.getMessage()); }//CATCH
 		
 		return null;
 	}//FUN
@@ -89,7 +148,7 @@ public class DataBase {
 		return -1;
 	}//FUN
 	
-	public boolean createVerificationTimer(int id) {
+	public void createVerificationTimer(int id) {
 		try {
 			String selectSQL ="CREATE EVENT verification_"+id+"\n"
 							+ "ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 1 MINUTE\n"
@@ -97,15 +156,56 @@ public class DataBase {
 			Statement st = con.createStatement();
 			
 			st.executeUpdate(selectSQL);
-			
-			return true;
 		}//TRY
 		catch (SQLException e) {
 			e.printStackTrace();
 		}//CATCH
-		
-		return false;
 	}//FUN
+	
+	public int getVerificationCode(int id) {
+		try {
+			String selectSQL ="SELECT code FROM verification";
+			Statement st = con.createStatement();
+			
+			ResultSet rs = st.executeQuery(selectSQL);
+			rs.next();
+			
+			return rs.getInt(1);
+		}//TRY
+		catch (SQLException e) {}//CATCH
+		
+		return -1;
+	}//FUN
+	
+	public int createContact(Contact contact, Register register) {
+		try {
+			String selectSQL ="SELECT createContact(?,?,?,?,?,?);";
+			PreparedStatement ps = con.prepareStatement(selectSQL);
+			
+			ps.setString(1, contact.getName());
+			ps.setString(2, contact.getDescription());
+
+			if (contact.getImage() != null) {
+				ps.setBinaryStream(3, ImageController.convertToInputStream(contact.getImage(), "png"));
+			} else {
+				ps.setNull(3, java.sql.Types.BLOB);
+			}//IF
+
+			ps.setBoolean(4, contact.isAnonymous());
+			ps.setString(5, register.getEmail());
+			ps.setString(6, register.getPasswd());
+			
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			
+			return rs.getInt(1);
+		}//TRY
+		catch (SQLException e) { e.printStackTrace(); }//CATCH
+		
+		return -1;
+	}//FUN
+	
+	
 	
 	
 	

@@ -5,7 +5,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.david.chataim.controller.Controller;
 import com.david.chataim.controller.Dimens;
 import com.david.chataim.controller.ImageController;
 import com.david.chataim.controller.events.ExitMouseListener;
@@ -25,7 +24,7 @@ public class LoginFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	@Getter private JPanel contentPane;
-	private JPanel panelHeader;
+	@Getter private JPanel panelHeader;
 	@Getter private JLabel lblExit;
 	private CoverPanel panelCover;
 	@Getter private LoginPanel panelLogin;
@@ -42,17 +41,18 @@ public class LoginFrame extends JFrame {
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 		
+		// HEADER
 		panelHeader = new JPanel();
 		panelHeader.setOpaque(false);
 		panelHeader.setLayout(null);
-		panelHeader.setBounds(0, 0, Dimens.LOGIN_HEADER_W, Dimens.LOGIN_HEADER_H);
-		Controller.s().setMessagePanel(panelHeader);
+		panelHeader.setBounds(0, 0, Dimens.LOGIN_W, Dimens.LOGIN_HEADER_H);
 		
 		// Move window with the mouse
 		MoveWindowListener moveWindowListener = new MoveWindowListener(this);
 		panelHeader.addMouseMotionListener(moveWindowListener.new MouseDragged());
 		panelHeader.addMouseListener(moveWindowListener.new MouseAdapter());
 		
+		// EXIT LBL
 		lblExit = new JLabel();
 		lblExit.addMouseListener(new ExitMouseListener());
 		lblExit.setIcon(new ImageIcon(UsersWindow.class.getResource(ImageController.EXIT_BLACK)));
@@ -60,15 +60,19 @@ public class LoginFrame extends JFrame {
 		lblExit.setBounds(875, 11, 30, 30);
 		panelHeader.add(lblExit);
 		
+		// LOGIN
 		panelLogin = new LoginPanel();
 		panelLogin.setBounds(0, 0, 554, 525);
 		
-		panelRegister = new RegisterPanel(this);
+		// REGISTER
+		panelRegister = new RegisterPanel();
 		panelRegister.setBounds(Dimens.LOGIN_W-554, -Dimens.LOGIN_H, 554, 525);
 		
+		// COVER
 		panelCover = new CoverPanel(this);
 		panelCover.setBounds(554, 0, 371, 525);
 		
+		// ADDs
 		contentPane.add(panelHeader);
 		contentPane.add(panelCover);
 		contentPane.add(panelLogin);
