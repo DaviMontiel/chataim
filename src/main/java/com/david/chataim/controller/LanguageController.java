@@ -66,7 +66,13 @@ public class LanguageController {
 		"Acepta los términos y condiciones para continuar",
 		
 		// OTHER
-		"No se a encontrado ninguna cuenta"
+		"No se a encontrado ninguna cuenta",
+		"Añadir Contacto",
+		"ID Code",
+		"AGREGAR",
+		"Rellene el ID del usuario",
+		"Usuario no encontrado",
+		"No se a podido crear el usuario, intentelo mas tarde"
 		
 	};
 	
@@ -128,7 +134,13 @@ public class LanguageController {
 		"Accept the terms and conditions to continue",
 		
 		// OTHER
-		"No account found"
+		"No account found",
+		"Add Contact",
+		"ID Code",
+		"ADD",
+		"Fill User ID",
+		"User not found",
+		"Failed to create user, try again later"
 		
 	};
 	

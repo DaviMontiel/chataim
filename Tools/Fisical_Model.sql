@@ -60,11 +60,12 @@ CREATE TABLE chat (
 
 CREATE TABLE message (
     id INTEGER AUTO_INCREMENT NOT NULL,
-    content TEXT NOT NULL,
-    file BLOB NOT NULL,
-    send_datetime TIMESTAMP,
+    content TEXT NULL,
+    file BLOB NULL,
+    send TIMESTAMP NOT NULL,
     id_contact INTEGER NOT NULL,
     id_chat INTEGER NOT NULL,
+    id_ascii INTEGER NULL,
     CONSTRAINT PRIMARY KEY (id, id_contact, id_chat)
 );
 
@@ -86,15 +87,13 @@ CREATE TABLE added_contact (
     id_contact_contact INTEGER NOT NULL,
     id_chat INTEGER NOT NULL,
     name VARCHAR(25) NULL,
-    last_message INTEGER NULL,
     CONSTRAINT PRIMARY KEY (id_contact_propietary, id_contact_contact, id_chat)
 );
 
-CREATE TABLE contains_ascii (
-	id_ascii INTEGER NOT NULL,
+CREATE TABLE messaging_queue (
+	id_contact INTEGER NOT NULL,
 	id_message INTEGER NOT NULL,
-	position INTEGER NOT NULL,
-	CONSTRAINT PRIMARY KEY (id_ascii, id_message, position)
+	CONSTRAINT PRIMARY KEY (id_contact, id_message)
 );
 
 
@@ -112,8 +111,8 @@ ALTER TABLE added_contact ADD CONSTRAINT FOREIGN KEY (id_contact_propietary) REF
 ALTER TABLE added_contact ADD CONSTRAINT FOREIGN KEY (id_contact_contact) REFERENCES contact(id);
 ALTER TABLE added_contact ADD CONSTRAINT FOREIGN KEY (id_chat) REFERENCES chat(id);
 
-ALTER TABLE contains_ascii ADD CONSTRAINT FOREIGN KEY (id_ascii) REFERENCES ascii(id);
-ALTER TABLE contains_ascii ADD CONSTRAINT FOREIGN KEY (id_message) REFERENCES message(id);
+ALTER TABLE messaging_queue ADD CONSTRAINT FOREIGN KEY (id_contact) REFERENCES contact(id);
+ALTER TABLE messaging_queue ADD CONSTRAINT FOREIGN KEY (id_message) REFERENCES message(id);
 
 
 INSERT INTO app VALUES ("https://h6tkxluzxw8nwqic3crz9c.on.drv.tw/pagina/chataim/es/emailVerificationCode.html",
@@ -123,7 +122,7 @@ INSERT INTO app VALUES ("https://h6tkxluzxw8nwqic3crz9c.on.drv.tw/pagina/chataim
 
 					
 					
-# Este comando deshabilita temporalmente la verificaci�n de las caracter�sticas DETERMINISTIC, NO SQL y READS SQL DATA al crear funciones
+# Este comando deshabilita temporalmente la verificacion de las caracteristicas DETERMINISTIC, NO SQL y READS SQL DATA al crear funciones
 SET GLOBAL log_bin_trust_function_creators = 1;
 
 
@@ -179,21 +178,80 @@ BEGIN
 END //
 DELIMITER ;
 
+DELIMITER //
+CREATE FUNCTION createChat(
+	p_id_propietary INTEGER,
+	p_id_contact INTEGER
+)
+RETURNS INT
+NOT DETERMINISTIC
+BEGIN
+	DECLARE id INTEGER;
+	DECLARE v_chat INTEGER;
+
+	# CKECK IF PROPIETARY HAVE CHAT WITH HIM
+	SELECT id_chat INTO v_chat FROM added_contact WHERE id_contact_propietary = p_id_contact AND id_contact_contact = p_id_propietary;
+	IF (v_chat IS NOT NULL) THEN
+		INSERT INTO added_contact (id_contact_propietary, id_contact_contact, id_chat) VALUES (p_id_propietary, p_id_contact, v_chat);
+		
+		RETURN v_chat;
+	
+	ELSE
+		INSERT INTO chat () VALUES ();
+	
+		SET id = LAST_INSERT_ID();
+
+		INSERT INTO added_contact (id_contact_propietary, id_contact_contact, id_chat) VALUES (p_id_propietary, p_id_contact, id);
+	
+		RETURN id;
+	END IF;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION sendMessageText(
+	p_text TEXT,
+	p_send TIMESTAMP,
+	p_chat INTEGER,
+	p_from INTEGER,
+	p_to INTEGER,
+	p_addToQueue BOOLEAN
+)
+RETURNS BOOLEAN
+NOT DETERMINISTIC
+BEGIN
+	DECLARE idMessage INTEGER;
+	DECLARE v_isConnected BOOLEAN;
+
+	INSERT INTO message (content, send, id_chat, id_contact) VALUES (p_text, p_send, p_chat, p_from);
+
+	SET idMessage = LAST_INSERT_ID();
+
+	# IF IS CONNECTED THE USER, ADD ROW
+	IF (p_addToQueue) THEN
+		SELECT isConnected INTO v_isConnected FROM contact WHERE id = p_to;
+		IF (v_isConnected) THEN
+			INSERT INTO messaging_queue (id_contact, id_message) VALUES (p_to, idMessage);
+		END IF;
+	
+	END IF;
+	
+	RETURN TRUE;
+END //
+DELIMITER ;
+
+
 
 # EVENTO PARA ELIMINAR CODIGO DE VERIFICACION
 -- CREATE EVENT insertion_event
 -- ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 10 MINUTE
 -- DO DELETE FROM verification WHERE id = idToRemove
 
-
-
-
-
-
-
-
-
-
+# OBTENER LOS CONTACTOS QUE TIENE UNA PERSONA
+-- SELECT contact.*, added_contact.id_chat FROM contact
+-- INNER JOIN added_contact
+-- ON contact.id = added_contact.id_contact_contact
+-- WHERE added_contact.id_contact_propietary = 2;
 
 
 

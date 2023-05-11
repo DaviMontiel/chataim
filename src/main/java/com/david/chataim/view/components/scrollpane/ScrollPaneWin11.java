@@ -4,6 +4,7 @@ import java.awt.Container;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.util.Objects;
+
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneLayout;
 
@@ -26,11 +27,11 @@ public class ScrollPaneWin11 extends JScrollPane {
     @Override
     public void updateUI() {
         super.updateUI();
-            setComponentZOrder(getVerticalScrollBar(), 0);
-            setComponentZOrder(getHorizontalScrollBar(), 1);
-            setComponentZOrder(getViewport(), 2);
-            getVerticalScrollBar().setOpaque(false);
-            getHorizontalScrollBar().setOpaque(false);
+        setComponentZOrder(getVerticalScrollBar(), 0);
+        setComponentZOrder(getHorizontalScrollBar(), 1);
+        setComponentZOrder(getViewport(), 2);
+        getVerticalScrollBar().setOpaque(false);
+        getHorizontalScrollBar().setOpaque(false);
     }//FUN
 
     private class ScrollLayout extends ScrollPaneLayout {

@@ -45,9 +45,10 @@ public class CheckFieldsSingIn implements ActionListener {
 						Contact contact = Controller.s().singIn(loginPanel.getTfEmail().getText(), String.valueOf(loginPanel.getTfPasswd().getPassword()));
 						
 						if (contact != null) {
-							Controller.s().changeToFrameContactChats(contact);
+							Controller.s().changeToFrameContactChats();
+						} else {
+							Controller.s().showMessage(Message.MessageType.ERROR, LanguageController.getWord(41));
 						}//IF
-						Controller.s().showMessage(Message.MessageType.ERROR, LanguageController.getWord(41));
 					}//IF
 					
 					btn.setIcon(null);

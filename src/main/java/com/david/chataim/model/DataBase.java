@@ -9,24 +9,25 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedHashMap;
 
 import com.david.chataim.controller.ImageController;
 
 
 public class DataBase {
 
-	public static Connection con;
-	private final String NAMEDB ="chataim";
-	private final String USER ="root";
-	private final String PASSWD ="root123";
-	private final String URL ="jdbc:mysql://localhost:3306/"+NAMEDB;
-	private final String DRIVER ="com.mysql.cj.jdbc.Driver";
-	
 //	public static Connection con;
+//	private final String NAMEDB ="chataim";
 //	private final String USER ="root";
-//	private final String PASSWD ="EIoYXNlWpzmRQ4vWqsal";
-//	private final String URL ="jdbc:mysql://containers-us-west-39.railway.app:6254/railway";
+//	private final String PASSWD ="root123";
+//	private final String URL ="jdbc:mysql://localhost:3306/"+NAMEDB;
 //	private final String DRIVER ="com.mysql.cj.jdbc.Driver";
+	
+	public static Connection con;
+	private final String USER ="root";
+	private final String PASSWD ="EIoYXNlWpzmRQ4vWqsal";
+	private final String URL ="jdbc:mysql://containers-us-west-39.railway.app:6254/railway";
+	private final String DRIVER ="com.mysql.cj.jdbc.Driver";
 	
 	public static enum APP {
 		URL_EMAIL_VERIFICATION_CODE, URL, URL_TERMS_AND_CODITIONS};
@@ -82,23 +83,24 @@ public class DataBase {
 		return -1;
 	}//IF
 	
+	// ADD NEW CONTACT TO THE LIST
 	public Contact getContact(int id) {
 		try {
 			String selectSQL ="SELECT * FROM contact WHERE id = "+id;
 			Statement st = con.createStatement();
 			
 			ResultSet rs = st.executeQuery(selectSQL);
-			rs.next();
 			
-			Image profileImage = null;
-			InputStream isImage = rs.getBinaryStream(4);
-			if (isImage == null) {
-				profileImage = ImageController.getDefaultImageUser();
-			} else {
-				profileImage = ImageController.convertToImage(rs.getBinaryStream(4));				
+			if (rs.next()) {
+				Contact contact = new Contact();
+				contact.setId(rs.getInt(1));
+				contact.setOriginalName(rs.getString(2));
+				contact.setDescription(rs.getString(3));
+				contact.setImage(getImage(rs.getBinaryStream(4)));
+				contact.setLast_connection(rs.getTimestamp(6));
+				contact.setConnected(rs.getBoolean(7));
+				return contact;
 			}//IF
-			
-			return new Contact(rs.getInt(1), rs.getString(2), rs.getString(3), profileImage, rs.getBoolean(5), rs.getTimestamp(6));
 		} catch (SQLException e) { e.printStackTrace(); }//CATCH
 		
 		return null;
@@ -177,15 +179,16 @@ public class DataBase {
 		return -1;
 	}//FUN
 	
+	// CREATE CONTACT ON REGISTER
 	public int createContact(Contact contact, Register register) {
 		try {
 			String selectSQL ="SELECT createContact(?,?,?,?,?,?);";
 			PreparedStatement ps = con.prepareStatement(selectSQL);
 			
-			ps.setString(1, contact.getName());
+			ps.setString(1, contact.getOriginalName());
 			ps.setString(2, contact.getDescription());
 
-			if (contact.getImage() != null) {
+			if (contact.getImage() != ImageController.getDefaultImageUser()) {
 				ps.setBinaryStream(3, ImageController.convertToInputStream(contact.getImage(), "png"));
 			} else {
 				ps.setNull(3, java.sql.Types.BLOB);
@@ -200,10 +203,259 @@ public class DataBase {
 			
 			return rs.getInt(1);
 		}//TRY
+		catch (SQLException e) {}//CATCH
+		
+		return -1;
+	}//FUN
+	
+	public int getChat(int idPropietary, int idNewContact) {
+		try {
+			String selectSQL ="SELECT createChat("+idPropietary+", "+idNewContact+");";
+			Statement st = con.createStatement();
+			
+			ResultSet rs = st.executeQuery(selectSQL);
+			
+			if (rs.next()) {
+				return rs.getInt(1);
+			}//IF
+		} catch (SQLException e) { e.printStackTrace(); }//CATCH
+		
+		return -1;
+	}//FUN
+	
+	// ADD CONTACT FOR CONTACT WITH CHAT
+	public int createNewChat(int idPropietary, int idNewContact) {
+		try {
+			String selectSQL ="SELECT createChat(?,?);";
+			PreparedStatement ps = con.prepareStatement(selectSQL);
+			
+			ps.setInt(1, idPropietary);
+			ps.setInt(2, idNewContact);
+			
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			
+			return rs.getInt(1);
+		}//TRY
 		catch (SQLException e) { e.printStackTrace(); }//CATCH
 		
 		return -1;
 	}//FUN
+	
+	public LinkedHashMap<Integer, Contact> getContacts(int idPropietary) {
+		LinkedHashMap<Integer, Contact> contacts = null;
+		try {
+			String sql = "SELECT contact.*, added_contact.id_chat FROM contact"
+					+ " INNER JOIN added_contact"
+					+ " ON contact.id = added_contact.id_contact_contact"
+					+ " WHERE added_contact.id_contact_propietary = "+idPropietary+";";
+			Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			ResultSet rs = st.executeQuery(sql);
+			
+			// GET ROW COUNT
+			int rowCount = getRowCount(rs);
+		    
+		    if (rowCount != 0) {
+		    	contacts = new LinkedHashMap<Integer, Contact>();
+		    	
+				// SAVE ANY CONTACTs
+		    	while (rs.next()) {
+		    		// CREATE CONTACT
+					Contact contact = new Contact();
+					contact.setId(rs.getInt(1));
+					contact.setOriginalName(rs.getString(2));
+					contact.setDescription(rs.getString(3));
+					contact.setImage(getImage(rs.getBinaryStream(4)));
+					contact.setLast_connection(rs.getTimestamp(6));
+					contact.setConnected(rs.getBoolean(7));
+					contact.setChat(rs.getInt(8));
+					
+					// ADD TO THE LIST
+					contacts.put(rs.getInt(1), contact);
+		    	}//WHILE
+		    }//IF
+			
+			rs.close();
+			st.close();
+		}//TRY
+		catch (SQLException xp) {}//CATCH
+		
+		return contacts;
+	}//FUN
+	
+	public boolean sendMessage(int chat, ChatMessage message, int to, boolean addToQueue) {
+		try {
+			String selectSQL ="SELECT sendMessageText(?,?,?,?,?,?);";
+			PreparedStatement ps = con.prepareStatement(selectSQL);
+			
+			ps.setString(1, message.getText());
+			ps.setTimestamp(2, message.getSend());
+			ps.setInt(3, chat);
+			ps.setInt(4, message.getContact().getId());
+			ps.setInt(5, to);
+			ps.setBoolean(6, addToQueue);
+			
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			
+			return rs.getBoolean(1);
+		}//TRY
+		catch (SQLException e) {e.printStackTrace();}//CATCH
+		
+		return false;
+	}//FUN
+	
+	public void sendFile() {
+		
+	}//FUN
+	
+	public void sendAsscii() {
+		
+	}//FUN
+	
+	public ChatMessage[] getAllMessagesOf(Contact contact, Contact currentContact) {
+		ChatMessage[] messages = null;
+		try {
+			String sql = "SELECT id, content, IF(file IS NULL, false, true), send, id_contact, IF (id_ascii IS NULL, false, true) FROM message WHERE id_chat = "+contact.getChat()+";";
+			Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			ResultSet rs = st.executeQuery(sql);
+			
+			// GET ROW COUNT
+			int rowCount = getRowCount(rs);
+		    
+		    if (rowCount != 0) {
+		    	messages = new ChatMessage[rowCount];
+		    	
+				// SAVE MESSAGES
+		    	for (int f=0; f<rowCount; f++) {
+		    		rs.next();
+		    		
+		    		// WHO IS THE PROPIETARY
+		    		Contact auxContact = null;
+		    		if (rs.getInt(5) == currentContact.getId()) {
+		    			auxContact = currentContact;
+		    		} else {
+		    			auxContact = contact;
+		    		}//IF
+		    		
+		    		// CREATE MESSAGE
+		    		ChatMessage message = new ChatMessage(
+		    				rs.getInt(1),
+		    				rs.getString(2),
+		    				rs.getBoolean(3),
+		    				rs.getTimestamp(4),
+		    				rs.getBoolean(6)
+		    				);
+					message.setContact(auxContact);
+		    		
+					// ADD TO THE LIST
+		    		messages[f] = message;
+		    	}//WHILE
+		    }//IF
+			
+			rs.close();
+			st.close();
+			
+			return messages;
+		}//TRY
+		catch (SQLException xp) { System.out.println(xp.toString()); }//CATCH
+		
+		return null;
+	}//FUN
+	
+	public ChatMessage[] getMessagesOf(int idContact) {
+		ChatMessage[] messages = null;
+		try {
+			String sql = "SELECT id, content, IF(file IS NULL, false, true), send, id_contact, IF (id_ascii IS NULL, false, true), id_chat"
+					+ " FROM message"
+					+ " WHERE EXISTS("
+					+ "SELECT * FROM messaging_queue WHERE message.id = messaging_queue.id_message AND messaging_queue.id_contact = "+idContact
+					+ ");";
+			Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			ResultSet rs = st.executeQuery(sql);
+			
+			// GET ROW COUNT
+			int rowCount = getRowCount(rs);
+		    
+		    if (rowCount != 0) {
+		    	messages = new ChatMessage[rowCount];
+		    	
+				// SAVE MESSAGES
+		    	for (int f=0; f<rowCount; f++) {
+		    		rs.next();
+		    		
+		    		// CREATE MESSAGE
+		    		ChatMessage message = new ChatMessage(
+		    				rs.getInt(1),
+		    				rs.getString(2),
+		    				rs.getBoolean(3),
+		    				rs.getTimestamp(4),
+		    				rs.getBoolean(6)
+		    				);
+		    		Contact contact = new Contact();
+		    		contact.setId(rs.getInt(5));
+		    		contact.setChat(rs.getInt(7));
+		    		message.setContact(contact);
+					
+					// ADD TO THE LIST
+		    		messages[f] = message;
+		    	}//WHILE
+		    }//IF
+			
+			rs.close();
+			st.close();
+			
+			return messages;
+		}//TRY
+		catch (SQLException xp) {}//CATCH
+		
+		return null;
+	}//FUN
+	
+	private int getRowCount(ResultSet rs) throws SQLException {
+		rs.last();
+		int rowCount = rs.getRow();
+	    rs.beforeFirst();
+	    
+	    return rowCount;
+	}//FUN
+	
+	public void removeMessagesQueue(ChatMessage[] messages) {
+		String deleteSQL = "DELETE FROM messaging_queue WHERE id_message IN(";
+		
+		// FIRST MESSAGE
+		deleteSQL += messages[0].getId();
+		
+		// ADD THE REST
+		for (int f=1; f<messages.length; f++) {
+			deleteSQL += "," + messages[f].getId();
+		}//FOR
+		deleteSQL += ");";
+		
+		try {
+			PreparedStatement ps = con.prepareStatement(deleteSQL);
+			
+			ps.executeUpdate();
+			ps.close();
+		}//TRY
+		catch (SQLException e) { e.printStackTrace(); }//CATCH
+	}//FUN
+
+	// GET IMAGE OF BLOB, OR DEFAULT
+	private Image getImage(InputStream blob) {
+		if (blob == null) {
+			return ImageController.getDefaultImageUser();
+		} else {
+			return ImageController.convertToImage(blob);				
+		}//IF
+	}//FUN
+	
+	
+	
+	
 	
 	
 	

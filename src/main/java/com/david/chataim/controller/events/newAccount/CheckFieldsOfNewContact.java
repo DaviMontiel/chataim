@@ -48,19 +48,23 @@ public class CheckFieldsOfNewContact implements ActionListener {
 					
 					// CREATE CONTACT IF IS OK
 					if (checkFields()) {
-						Contact contact = new Contact(register.getName(), mtaDescription.getText(), ImageController.getDefaultImageUser(), mcbAnonymous.isSelected());
+						Contact contact = new Contact();
+						contact.setOriginalName(register.getName());
+						contact.setDescription(mtaDescription.getText());
+						contact.setAnonymous(mcbAnonymous.isSelected());
+						
 						if (panelImage.isDistinct()) {
 							contact.setImage(panelImage.getImage());
+						} else {
+							contact.setImage(ImageController.getDefaultImageUser());
 						}//IF
 						
 						Controller.s().createNewContact(contact, register);
-						
-						Controller.s().changeToFrameContactChats(contact);
+					} else {
+						btn.setText(oldText);
+						btn.setIcon(null);
+						isClicked = false;
 					}//IF
-					
-					btn.setText(oldText);
-					btn.setIcon(null);
-					isClicked = false;
 				}
 			}.start();
 		}//IF

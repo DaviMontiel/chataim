@@ -23,9 +23,15 @@ public class Dimens {
 	
 	
 	//WINDOW
-	public static final short WINDOW_W = 1040;
-	public static final short WINDOW_H = 600;
+	public static final short WINDOW_W_PRE = 1040;
+	public static final short WINDOW_H_PRE = 600;
+	public static final short WINDOW_W_MIN = 750;
+	public static final short WINDOW_H_MIN = 450;
 	
 	// HEADER
 	public static final short WINDOW_HEADER_H = 52;
+	
+	// COMPONENTS
+	public static final short CONTACTS_PANEL_W = 334;
+	public static final short CONTACTS_PANEL_H = 548;
 }//CLASS

@@ -85,7 +85,7 @@ public class TextField extends JTextField {
         Area area = new Area(new RoundRectangle2D.Double(x, y, width, height, round, round));
         g2.fill(area);
         try {
-			g2.drawImage(ImageIO.read(new File(ImageController.SEARCH)), 10, 7, null);
+			g2.drawImage(ImageIO.read(getClass().getResource(ImageController.SEARCH)), 10, 7, null);
 		}//TRY
         catch (IOException e) {e.printStackTrace();}//CATCH
         g2.dispose();

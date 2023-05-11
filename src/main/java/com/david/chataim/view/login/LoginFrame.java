@@ -12,7 +12,7 @@ import com.david.chataim.controller.events.MoveWindowListener;
 import com.david.chataim.view.login.components.CoverPanel;
 import com.david.chataim.view.login.components.LoginPanel;
 import com.david.chataim.view.login.components.RegisterPanel;
-import com.david.chataim.view.main.UsersWindow;
+import com.david.chataim.view.mainFrame.UsersWindow;
 
 import lombok.Getter;
 

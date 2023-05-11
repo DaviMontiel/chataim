@@ -18,6 +18,7 @@ import com.david.chataim.controller.events.newAccount.ShowTermsAndCoditions;
 import com.david.chataim.view.components.MyCheckBox;
 import com.david.chataim.view.components.MyTextArea;
 import com.david.chataim.view.components.button.Button;
+import com.david.chataim.view.mainFrame.UsersWindow;
 import com.david.chataim.view.newAccount.events.CheckMtaSize;
 
 import lombok.Getter;
@@ -63,7 +64,7 @@ public class ContactDescriptionPanel extends JPanel {
 		gbc_mcbAnonymous.gridx = 0;
 		gbc_mcbAnonymous.gridy = 2;
 		mcbAnonymous = new MyCheckBox();
-		mcbAnonymous.setIcon(new ImageIcon(ImageController.INFO));
+		mcbAnonymous.setIcon(new ImageIcon(getClass().getResource(ImageController.INFO)));
 		mcbAnonymous.addMouseListenerToIcon(new ShowMessagePanel(LanguageController.getWord(36)));
 		mcbAnonymous.setText(LanguageController.getWord(35));
 		add(mcbAnonymous, gbc_mcbAnonymous);

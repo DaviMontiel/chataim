@@ -94,7 +94,6 @@ public class LoginPanel extends JPanel {
 		gbc_btn.gridy = 4;
 		Button btnSingIn = new Button();
 		btnSingIn.setPreferredSize(new Dimension(250,40));
-		btnSingIn.addActionListener(new CheckFieldsSingIn(this));
 		
 		// IF IS DB CONECTED SHOW TEXT
 		btnSingIn.setIcon(new ImageIcon(getClass().getResource(ImageController.GIF_LOADING)));
@@ -107,6 +106,7 @@ public class LoginPanel extends JPanel {
 				}//WHILE
 				btnSingIn.setIcon(null);
 				btnSingIn.setText(LanguageController.getWord(9));
+				btnSingIn.addActionListener(new CheckFieldsSingIn(LoginPanel.this));
 			}
 		}.start();
 

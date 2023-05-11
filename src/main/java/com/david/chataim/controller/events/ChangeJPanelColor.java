@@ -11,13 +11,14 @@ public class ChangeJPanelColor extends MouseAdapter {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		((JPanel) e.getSource()).setBackground(ColorController.PRIMARY_COLOR);
+		((JPanel) e.getSource()).setBackground(null);
 		((JPanel) e.getSource()).setOpaque(true);
-	}//EVT
+		((JPanel) e.getSource()).setBackground(ColorController.PRIMARY_COLOR);			
+	}//EVENT
 	
 	@Override
 	public void mouseExited(MouseEvent e) {
-		((JPanel) e.getSource()).setBackground(null);
 		((JPanel) e.getSource()).setOpaque(false);
-	}//EVT
+		((JPanel) e.getSource()).setBackground(null);
+	}//EVENT
 }//CLASS

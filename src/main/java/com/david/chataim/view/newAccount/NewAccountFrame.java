@@ -13,7 +13,7 @@ import com.david.chataim.controller.events.ExitMouseListener;
 import com.david.chataim.controller.events.MoveWindowListener;
 import com.david.chataim.controller.events.newAccount.CheckFieldsOfNewContact;
 import com.david.chataim.model.Register;
-import com.david.chataim.view.main.UsersWindow;
+import com.david.chataim.view.mainFrame.UsersWindow;
 import com.david.chataim.view.newAccount.components.ContactDescriptionPanel;
 import com.david.chataim.view.newAccount.components.ProfileImagePanel;
 

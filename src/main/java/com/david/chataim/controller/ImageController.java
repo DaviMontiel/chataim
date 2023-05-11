@@ -27,16 +27,18 @@ public class ImageController {
 	public static final String EXIT_WHITE = PATH_I+"Exit_White.png";
 	public static final String EXIT_BLACK = PATH_I+"Exit_Black.png";
 	
-	public static final String INFO = PATH_P+PATH_I+"info.png";
-	public static final String FILTER = PATH_I+"Filter.png";
-	public static final String SEARCH = PATH_P+PATH_I+"Search.png";
-	public static final String BBDD = PATH_I+"BBDD.png";
+	public static final String INFO = PATH_I+"info.png";
+	public static final String GROUP = PATH_I+"Group.png";
+	public static final String CHAT = PATH_I+"Chat.png";
+	public static final String VERTICAL_MENU = PATH_I+"VerticalMenu.png";
+	public static final String BACK = PATH_I+"Back.png";
+	public static final String SEARCH = PATH_I+"Search.png";
 	
 	public static final String USER_ICON = PATH_I+"miniUser.png";
 	public static final String EMAIL_ICON = PATH_I+"mail.png";
 	public static final String PASSWD_ICON = PATH_I+"pass.png";
 	
-	public static final String DEFAULT_PROFILE = PATH_P+PATH_I+"User.png";
+	public static final String DEFAULT_PROFILE = PATH_I+"User.png";
 	
 	
 	// GIFs
@@ -52,7 +54,7 @@ public class ImageController {
 			return default_profile;
 		}//IF
 		
-		return default_profile = new ImageIcon(ImageController.DEFAULT_PROFILE).getImage();
+		return default_profile = new ImageIcon(Controller.s().getClass().getResource(ImageController.DEFAULT_PROFILE)).getImage();
 	}//FUN
 	
 	public static ByteArrayInputStream convertToInputStream(Image image, String format) {

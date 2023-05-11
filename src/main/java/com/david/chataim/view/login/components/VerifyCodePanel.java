@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 
 import com.david.chataim.controller.LanguageController;
 import com.david.chataim.controller.events.register.CheckVerificationCode;
-import com.david.chataim.controller.events.register.ControlTfVerificationCode;
+import com.david.chataim.controller.events.register.OnlyNumbersTf;
 import com.david.chataim.model.Register;
 import com.david.chataim.view.components.MyTextField;
 import com.david.chataim.view.components.PanelRound;
@@ -72,7 +72,7 @@ public class VerifyCodePanel extends JPanel {
 		tfCode.setPreferredSize(new Dimension(250, 38));
 		tfCode.setFont(new Font("sansserif", 0, 11));
 		tfCode.setForeground(new Color(63, 63, 63));
-		tfCode.addKeyListener(new ControlTfVerificationCode());
+		tfCode.addKeyListener(new OnlyNumbersTf(8));
 		contentPanel.add(tfCode, gbc_tfCode);
 		
 		// BTNs
