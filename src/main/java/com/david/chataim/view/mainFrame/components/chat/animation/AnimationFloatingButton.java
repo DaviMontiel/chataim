@@ -9,6 +9,7 @@ public class AnimationFloatingButton {
 
     private final Animator animator;
     private boolean show;
+    
 
     public AnimationFloatingButton(MigLayout layout, Component com) {
         this.animator = new Animator(300, new TimingTargetAdapter() {
@@ -19,7 +20,7 @@ public class AnimationFloatingButton {
                     v = (int) (fraction * 50);
                 } else {
                     v = (int) ((1f - fraction) * 50);
-                }
+                }//IF
                 layout.setComponentConstraints(com, "pos 100%-50 100%-" + v + ",h 40,w 40");
                 com.revalidate();
             }
@@ -27,23 +28,23 @@ public class AnimationFloatingButton {
         this.animator.setResolution(1);
         this.animator.setAcceleration(.5f);
         this.animator.setDeceleration(.5f);
-    }
+    }//Constructor
 
     public void show() {
         if (!show) {
             stop();
             show = true;
             animator.start();
-        }
-    }
+        }//IF
+    }//FUN
 
     public void hide() {
         if (show) {
             stop();
             show = false;
             animator.start();
-        }
-    }
+        }//IF
+    }//FUN
 
     public void stop() {
         if (animator.isRunning()) {
@@ -52,10 +53,10 @@ public class AnimationFloatingButton {
             animator.setStartFraction(1f - f);
         } else {
             animator.setStartFraction(0f);
-        }
-    }
+        }//IF
+    }//FUN
 
     public boolean isRunning() {
         return animator.isRunning();
-    }
-}
+    }//IF
+}//CLASS

@@ -9,14 +9,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 
 import com.david.chataim.controller.LanguageController.LANGUAGE;
 import com.david.chataim.controller.events.AnimateMessage;
 import com.david.chataim.controller.events.WindowAnimation;
 import com.david.chataim.controller.events.chat.GetContactMessages;
+import com.david.chataim.controller.events.register.ShowVerifyCodePanel;
 import com.david.chataim.model.Contact;
 import com.david.chataim.model.DataBase;
 import com.david.chataim.model.ChatMessage;
@@ -42,6 +45,7 @@ public class Controller {
 	@Getter private Contact currentContact;
 	private LinkedHashMap<Integer, Contact> contacts;
 	private LinkedHashMap<Integer, Object> chats;
+	@Getter private LinkedHashMap<Integer, String> ascii;
 	
 	private boolean isChekingNewMessages;
 	
@@ -105,19 +109,71 @@ public class Controller {
 		chats.put(chat, chatGap);
 	}//FUN
 	
-	public void sendMessageTo(int chat, ChatMessage message, int to) {
+	public boolean sendMessageTo(int chat, ChatMessage message, int to) {
 		// CHECK IF IS FOR ME
-		boolean addToQueue = true;
-		if (to == currentContact.getId()) {
-			addToQueue = false;
-		}//IF
+		boolean addToQueue = isForMeMessage(to);
 		
 		// SEND MESSAGE
-		database.sendMessage(chat, message, to, addToQueue);
+		boolean wasSent = database.sendMessage(chat, message, to, addToQueue);
 		
 		// SAVE MESSAGE IN LIST
-		saveMessageInList(chat, new ChatMessage[] {message});
+		if (wasSent) {
+			saveMessageInList(chat, new ChatMessage[] {message});
+		}//IF
+		
+		return wasSent;
 	}//FUN
+	
+	public boolean sendImageTo(int chat, ChatMessage message, int to) {
+		// CHECK IF IS FOR ME
+		boolean addToQueue = isForMeMessage(to);
+		
+		// SHOW DIALOG
+		JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        
+		JOptionPane optionPane = new JOptionPane(progressBar, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION);
+		JDialog dialog = optionPane.createDialog(LanguageController.getWord(49));
+		new Thread() {
+    		@Override
+    		public void run() {    	        
+    	        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+    	        dialog.setModal(true);
+    	        dialog.setVisible(true);
+    		}
+    	}.start();
+		
+		// SEND FILE
+		boolean wasSent = database.sendFile(chat, message, to, addToQueue);
+		
+		// SAVE MESSAGE IN LIST
+		if (wasSent) {
+			progressBar.setValue(100);
+			saveMessageInList(chat, new ChatMessage[] {message});
+		}//IF
+		
+		dialog.setVisible(false);
+		dialog.dispose();
+		
+		return wasSent;
+	}//FUN
+	
+	public boolean sendAsciiTo(int chat, ChatMessage message, int to) {
+		// CHECK IF IS FOR ME
+		boolean addToQueue = isForMeMessage(to);
+		
+		// SEND MESSAGE
+		boolean wasSent = database.sendAscii(chat, message, to, addToQueue);
+		
+		// SAVE MESSAGE IN LIST
+		if (wasSent) {
+			saveMessageInList(chat, new ChatMessage[] {message});
+		}//IF
+		
+		return wasSent;
+	}//FUN
+	
+	private boolean isForMeMessage(int to) { if (to == currentContact.getId()) return false; else return true; }//FUN
 	
 	private void saveMessageInList(int chat, ChatMessage[] messages) {
 		if (chats == null) {
@@ -166,6 +222,10 @@ public class Controller {
 			// RETURN THE MESSAGES OF CHAT
 			return (ChatMessage[]) chat;
 		}//IF
+	}//FUN
+	
+	public String getAscii(int id) {
+		return ascii.get(id);
 	}//FUN
 	
 	/*
@@ -394,6 +454,22 @@ public class Controller {
 		}//IF
 	}//FUN
 	
+	private void fillAsciiList() {
+		new Thread() {
+			@Override
+			public void run() {
+				ascii = new LinkedHashMap<Integer, String>();
+				
+			 	Object[][] asciis = database.getAsciiList();
+			 	if (asciis != null) {
+				 	for (int f=0; f<asciis.length; f++) {
+				 		ascii.put((int) asciis[f][0], (String) asciis[f][1]);
+				 	}//FOR
+			 	}//IF
+			}
+		}.start();
+	}//V
+	
 	/*
 	 * VIEW
 	 */
@@ -533,6 +609,9 @@ public class Controller {
 		
 		// SHOW FRAME
 		frame.setVisible(true);
+		
+		// GET ASCII CHARACTERs
+		fillAsciiList();
 		
 		// LOOP
 		checkForNewMessages();

@@ -11,6 +11,7 @@ public class AnimationScroll {
 
     private final Animator animator;
     private TimingTarget target;
+    
 
     public AnimationScroll(Component component) {
         this.animator = new Animator(350);
@@ -23,7 +24,7 @@ public class AnimationScroll {
                 component.revalidate();
             }
         });
-    }
+    }//Constructor
 
     public void scrollHorizontal(JScrollPane scroll, int values) {
         stop();
@@ -31,7 +32,7 @@ public class AnimationScroll {
         target = new PropertySetter(scroll.getHorizontalScrollBar(), "value", scroll.getHorizontalScrollBar().getValue(), values);
         animator.addTarget(target);
         animator.start();
-    }
+    }//FUN
 
     public void scrollVertical(JScrollPane scroll, int values) {
         stop();
@@ -39,15 +40,15 @@ public class AnimationScroll {
         target = new PropertySetter(scroll.getVerticalScrollBar(), "value", scroll.getVerticalScrollBar().getValue(), values);
         animator.addTarget(target);
         animator.start();
-    }
+    }//FUN
 
     public void stop() {
         if (animator.isRunning()) {
             animator.stop();
-        }
-    }
+        }//IF
+    }//FUN
 
     public boolean isRunning() {
         return animator.isRunning();
-    }
-}
+    }//FUN
+}//CLASS

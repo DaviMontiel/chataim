@@ -1,25 +1,14 @@
 package com.david.chataim.view.mainFrame.components.chat;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import javax.swing.GroupLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import com.david.chataim.controller.Controller;
+import com.david.chataim.controller.events.chat.SendMessage;
 import com.david.chataim.model.ChatMessage;
 import com.david.chataim.model.Contact;
 import com.david.chataim.view.mainFrame.components.chat.component.ChatArea;
 import com.david.chataim.view.mainFrame.components.chat.component.ChatBox;
-import com.david.chataim.view.mainFrame.components.chat.model.ModelMessage;
 import com.david.chataim.view.mainFrame.components.chat.swing.Background;
-import com.david.chataim.view.mainFrame.components.chat.swing.ChatEvent;
 
 import lombok.Getter;
 
@@ -28,7 +17,7 @@ public class ChatPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     private Background background;
-    private ChatArea chatArea;
+    @Getter private ChatArea chatArea;
     
     @Getter private Contact contact;
     
@@ -77,36 +66,7 @@ public class ChatPanel extends JPanel {
     }//FUN
     
     public void initEvents() {
-    	// BTNs EVENTs
-        chatArea.addChatEvent(new ChatEvent() {
-            @Override
-            public void mousePressedSendButton(ActionEvent evt) {
-            	try {
-            		String now = new SimpleDateFormat("dd/MM/yyyy, hh:mmaa").format(new Date());
-					Timestamp time = new Timestamp(new SimpleDateFormat("dd/MM/yyyy, hh:mmaa").parse(now).getTime());
-					ChatMessage message = new ChatMessage(Controller.s().getCurrentContact(), chatArea.getText().trim(), time);
-	            	addMessage(message);
-	            	
-	            	// SHARE MESSAGE
-	            	Controller.s().sendMessageTo(contact.getChat(), message, contact.getId());
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}//CATCH
-            }//EVENT
-
-            @Override
-            public void mousePressedFileButton(ActionEvent evt) {
-//            	Icon icon = new ImageIcon(getClass().getResource(ImageController.DEFAULT_PROFILE));
-//                String name = "David";
-//                String date = df.format(new Date());
-//                String message = chatArea.getText().trim();
-//                chatArea.addChatBox(new ModelMessage(icon, name, date, message), ChatBox.BoxType.LEFT);
-//                chatArea.clearTextAndGrabFocus();
-            }//EVENT
-
-            @Override
-            public void keyTyped(KeyEvent evt) {}//EVENT
-        });
+        chatArea.addChatEvent(new SendMessage(this));
     }//FUN
     
     public void setContact(Contact contact) {
@@ -131,11 +91,7 @@ public class ChatPanel extends JPanel {
         	site = ChatBox.BoxType.RIGHT;
         }//IF
         
-        Icon icon = new ImageIcon(messageContact.getImage());
-        String date = new SimpleDateFormat("dd/MM/yyyy, hh:mmaa").format(chatMessage.getSend());
-        String message = chatMessage.getText().trim();
-        
-        chatArea.addChatBox(new ModelMessage(icon, messageContact.getOriginalName(), date, message), site);
+        chatArea.addChatBox(chatMessage, site);
         chatArea.clearTextAndGrabFocus();
     }//FUN
     

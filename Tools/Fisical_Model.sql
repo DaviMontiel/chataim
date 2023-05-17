@@ -61,7 +61,7 @@ CREATE TABLE chat (
 CREATE TABLE message (
     id INTEGER AUTO_INCREMENT NOT NULL,
     content TEXT NULL,
-    file BLOB NULL,
+    file LONGBLOB NULL,
     send TIMESTAMP NOT NULL,
     id_contact INTEGER NOT NULL,
     id_chat INTEGER NOT NULL,
@@ -240,7 +240,69 @@ BEGIN
 END //
 DELIMITER ;
 
+DELIMITER //
+CREATE FUNCTION sendMessageFile(
+	p_file LONGBLOB,
+	p_send TIMESTAMP,
+	p_chat INTEGER,
+	p_from INTEGER,
+	p_to INTEGER,
+	p_addToQueue BOOLEAN
+)
+RETURNS BOOLEAN
+NOT DETERMINISTIC
+BEGIN
+	DECLARE idMessage INTEGER;
+	DECLARE v_isConnected BOOLEAN;
 
+	INSERT INTO message (file, send, id_chat, id_contact) VALUES (p_file, p_send, p_chat, p_from);
+
+	SET idMessage = LAST_INSERT_ID();
+
+	# IF IS CONNECTED THE USER, ADD ROW
+	IF (p_addToQueue) THEN
+		SELECT isConnected INTO v_isConnected FROM contact WHERE id = p_to;
+		IF (v_isConnected) THEN
+			INSERT INTO messaging_queue (id_contact, id_message) VALUES (p_to, idMessage);
+		END IF;
+	
+	END IF;
+	
+	RETURN TRUE;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE FUNCTION sendMessageAscii(
+	p_ascii LONGBLOB,
+	p_send TIMESTAMP,
+	p_chat INTEGER,
+	p_from INTEGER,
+	p_to INTEGER,
+	p_addToQueue BOOLEAN
+)
+RETURNS BOOLEAN
+NOT DETERMINISTIC
+BEGIN
+	DECLARE idMessage INTEGER;
+	DECLARE v_isConnected BOOLEAN;
+
+	INSERT INTO message (id_ascii, send, id_chat, id_contact) VALUES (p_ascii, p_send, p_chat, p_from);
+
+	SET idMessage = LAST_INSERT_ID();
+
+	# IF IS CONNECTED THE USER, ADD ROW
+	IF (p_addToQueue) THEN
+		SELECT isConnected INTO v_isConnected FROM contact WHERE id = p_to;
+		IF (v_isConnected) THEN
+			INSERT INTO messaging_queue (id_contact, id_message) VALUES (p_to, idMessage);
+		END IF;
+	
+	END IF;
+	
+	RETURN TRUE;
+END //
+DELIMITER ;
 
 # EVENTO PARA ELIMINAR CODIGO DE VERIFICACION
 -- CREATE EVENT insertion_event
@@ -255,6 +317,20 @@ DELIMITER ;
 
 
 
+# ASCII CHARACTERS
+INSERT INTO ascii (content) VALUES ("(︶︹︶)");
+INSERT INTO ascii (content) VALUES ("¯\_(ツ)_/¯");
+INSERT INTO ascii (content) VALUES ("o/");
+INSERT INTO ascii (content) VALUES ("\_o_/");
+INSERT INTO ascii (content) VALUES ("{\__/}\n(●_●)\n( >🌮 Want a taco?");
+INSERT INTO ascii (content) VALUES ("⊂(◉‿◉)つ");
+INSERT INTO ascii (content) VALUES ("(ㆆ _ ㆆ)");
+INSERT INTO ascii (content) VALUES ("☜(⌒▽⌒)☞");
+INSERT INTO ascii (content) VALUES ("•`_´•");
+INSERT INTO ascii (content) VALUES ("ʕっ•ᴥ•ʔっ");
+INSERT INTO ascii (content) VALUES ("0__#");
+INSERT INTO ascii (content) VALUES ("( 0 _ 0 )");
+INSERT INTO ascii (content) VALUES ("(͡ ° ͜ʖ ͡ °)");
 
 
 

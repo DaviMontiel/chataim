@@ -5,10 +5,13 @@ import javax.swing.JScrollBar;
 
 public class ScrollBar extends JScrollBar {
 
-    public ScrollBar() {
+    private static final long serialVersionUID = 1L;
+    
+
+	public ScrollBar() {
         setUI(new ModernScrollBarUI());
         setPreferredSize(new Dimension(5, 5));
         setOpaque(false);
         setUnitIncrement(20);
-    }
-}
+    }//Constructor
+}//CLASS

@@ -16,19 +16,18 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 public class TextField extends JTextPane {
 
-    public String getHint() {
-        return hint;
-    }
-
-    public void setHint(String hint) {
-        this.hint = hint;
-        repaint();
-    }
+    private static final long serialVersionUID = 1L;
 
     private String hint = "";
     private final Animator animator;
     private float animate;
     private boolean show = true;
+    
+    
+	public void setHint(String hint) {
+        this.hint = hint;
+        repaint();
+    }//FUN
 
     public TextField() {
         setOpaque(false);
@@ -44,7 +43,8 @@ public class TextField extends JTextPane {
                     animate = fraction;
                 } else {
                     animate = 1f - fraction;
-                }
+                }//IF
+                
                 repaint();
             }
 
@@ -53,8 +53,8 @@ public class TextField extends JTextPane {
                 show = !show;
                 repaint();
             }
-
         });
+        
         animator.setResolution(0);
         animator.setAcceleration(.5f);
         animator.setDeceleration(.5f);
@@ -66,33 +66,30 @@ public class TextField extends JTextPane {
                         if (animator.isRunning() == false) {
                             stop();
                             animator.start();
-                        }
+                        }//IF
                     } else if (animator.isRunning()) {
                         stop();
                         animator.start();
-                    }
-                }
-            }
+                    }//IF
+                }//IF
+            }//EVENT
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 if (getText().equals("")) {
                     stop();
                     animator.start();
-                }
-            }
+                }//IF
+            }//EVENT
 
             @Override
-            public void changedUpdate(DocumentEvent e) {
-
-            }
+            public void changedUpdate(DocumentEvent e) {}//EVENT
         });
-
-    }
+    }//Constructor
 
     private void autoWrapText() {
         setEditorKit(new AutoWrapText());
-    }
+    }//FUN
 
     private void stop() {
         if (animator.isRunning()) {
@@ -101,22 +98,26 @@ public class TextField extends JTextPane {
             animator.setStartFraction(1f - f);
         } else {
             animator.setStartFraction(0f);
-        }
-    }
+        }//IF
+    }//FUN
 
     @Override
     public void paint(Graphics g) {
         if (!hint.equals("")) {
             Graphics2D g2 = (Graphics2D) g.create();
+            
             int h = getHeight();
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            
             Insets ins = getInsets();
             FontMetrics fm = g.getFontMetrics();
+            
             g2.setColor(new Color(170, 170, 170));
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f - animate));
             g2.drawString(hint, ins.left + (animate * 30), h / 2 + fm.getAscent() / 2 - 1);
             g2.dispose();
-        }
+        }//IF
+        
         super.paint(g);
-    }
-}
+    }//FUN
+}//CLASS

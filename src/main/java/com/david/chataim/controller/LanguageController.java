@@ -72,7 +72,11 @@ public class LanguageController {
 		"AGREGAR",
 		"Rellene el ID del usuario",
 		"Usuario no encontrado",
-		"No se a podido crear el usuario, intentelo mas tarde"
+		"No se a podido crear el usuario, intentelo mas tarde",
+		"Escriba un mensaje aqui...",
+		"Subiendo archivo",
+		"fallo al subir mensaje",
+		"fallo al subir imagen"
 		
 	};
 	
@@ -140,7 +144,11 @@ public class LanguageController {
 		"ADD",
 		"Fill User ID",
 		"User not found",
-		"Failed to create user, try again later"
+		"Failed to create user, try again later",
+		"Write a message here ...",
+		"uploading file",
+		"failed to upload message",
+		"failed to upload image"
 		
 	};
 	

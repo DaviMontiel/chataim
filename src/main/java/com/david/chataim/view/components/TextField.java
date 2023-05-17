@@ -7,16 +7,12 @@ import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.geom.Area;
 import java.awt.geom.RoundRectangle2D;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-//import java.awt.image.BufferedImage;
-//import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-//import javax.swing.plaf.basic.BasicPasswordFieldUI;
 
 import com.david.chataim.controller.ImageController;
 

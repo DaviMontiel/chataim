@@ -1,10 +1,11 @@
-package com.david.chataim.controller;
+package com.david.chataim.controller.events.register;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
+import com.david.chataim.controller.Controller;
 import com.david.chataim.model.Register;
 import com.david.chataim.view.login.LoginFrame;
 import com.david.chataim.view.login.components.VerifyCodePanel;

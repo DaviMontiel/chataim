@@ -18,11 +18,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import com.david.chataim.controller.ColorController;
+import com.david.chataim.controller.LanguageController;
+import com.david.chataim.controller.events.chat.ChatEvent;
+import com.david.chataim.model.ChatMessage;
 import com.david.chataim.view.mainFrame.components.chat.animation.AnimationFloatingButton;
 import com.david.chataim.view.mainFrame.components.chat.animation.AnimationScroll;
-import com.david.chataim.view.mainFrame.components.chat.model.ModelMessage;
 import com.david.chataim.view.mainFrame.components.chat.swing.Button;
-import com.david.chataim.view.mainFrame.components.chat.swing.ChatEvent;
 import com.david.chataim.view.mainFrame.components.chat.swing.RoundPanel;
 import com.david.chataim.view.mainFrame.components.chat.swing.TextField;
 import com.david.chataim.view.mainFrame.components.chat.swing.scroll.ScrollBar;
@@ -87,9 +88,8 @@ public class ChatArea extends JPanel {
                 } else if (oldValues <= e.getValue()) {
                     if (!animationScroll.isRunning()) {
                         animationFloatingButton.show();
-                    }
-                }
-
+                    }//IF
+                }//IF
             }
         });
         floatingButton = createFloatingButton();
@@ -132,42 +132,42 @@ public class ChatArea extends JPanel {
         RoundPanel panel = new RoundPanel();
         panel.setBackground(new Color(255, 255, 255, 20));
         panel.setOpaque(true);
-        panel.setLayout(new MigLayout("fill, inset 2", "[fill,34!]2[fill]2[fill,34!]", "[bottom]"));
+        panel.setLayout(new MigLayout("fill, inset 2", "[fill,34!]2[fill,34!]2[fill]2[fill,34!]", "[bottom]"));
+        
         GoogleMaterialIcon iconFile = new GoogleMaterialIcon(GoogleMaterialDesignIcon.ATTACH_FILE, GradientType.VERTICAL, new Color(210, 210, 210), new Color(255, 255, 255), 20);
         GoogleMaterialIcon iconSend = new GoogleMaterialIcon(GoogleMaterialDesignIcon.SEND, GradientType.VERTICAL, new Color(0, 133, 237), new Color(90, 182, 255), 20);
-        GoogleMaterialIcon iconEmot = new GoogleMaterialIcon(GoogleMaterialDesignIcon.INSERT_EMOTICON, GradientType.VERTICAL, new Color(210, 210, 210), new Color(255, 255, 255), 20);
+        GoogleMaterialIcon iconAscii = new GoogleMaterialIcon(GoogleMaterialDesignIcon.INSERT_EMOTICON, GradientType.VERTICAL, new Color(210, 210, 210), new Color(255, 255, 255), 20);
         Button btnFile = new Button();
         Button btnSend = new Button();
+        Button btnAscii = new Button();
         btnFile.setFocusable(false);
         btnSend.setFocusable(false);
+        btnAscii.setFocusable(false);
         btnFile.setIcon(iconFile.toIcon());
         btnSend.setIcon(iconSend.toIcon());
+        btnAscii.setIcon(iconAscii.toIcon());
         textMessage = new TextField();
-        textMessage.setHint("Write a message here ...");
+        textMessage.setHint(LanguageController.getWord(45));
         textMessage.setCaretColor(Color.white);
+        
         textMessage.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                revalidate();
-            }
-
-            @Override
-            public void keyTyped(KeyEvent ke) {
-                runEventKeyTyped(ke);
-            }
+            @Override public void keyPressed(KeyEvent e) { revalidate(); }
+            @Override public void keyTyped(KeyEvent ke) { runEventKeyTyped(ke); }
         });
+        
         btnSend.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                runEventMousePressedSendButton(e);
-            }
+            public void actionPerformed(ActionEvent e) { runEventMousePressedSendButton(e); }
+        });
+        btnAscii.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) { runEventMousePressedAsciiButton(e); }
         });
         btnFile.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                runEventMousePressedFileButton(e);
-            }
+            public void actionPerformed(ActionEvent e) { runEventMousePressedFileButton(e); }
         });
+        
         JScrollPane scroll = createScroll();
         scroll.setViewportView(textMessage);
         scroll.getViewport().setOpaque(false);
@@ -175,8 +175,10 @@ public class ChatArea extends JPanel {
         scroll.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
         
         panel.add(btnFile, "height 34!");
+        panel.add(btnAscii, "height 34!");
         panel.add(scroll);
         panel.add(btnSend, "height 34!");
+        
         return panel;
     }//FUN
 
@@ -184,6 +186,7 @@ public class ChatArea extends JPanel {
         JLayeredPane layer = new JLayeredPane();
         layoutLayered = new MigLayout("fill,inset 0", "[fill]", "[fill]");
         layer.setLayout(layoutLayered);
+        
         return layer;
     }//FUN
 
@@ -201,6 +204,7 @@ public class ChatArea extends JPanel {
                 animationScroll.scrollVertical(scrollBody, scrollBody.getVerticalScrollBar().getMaximum());
             }
         });
+        
         return button;
     }//FUN
 
@@ -213,13 +217,14 @@ public class ChatArea extends JPanel {
         return scroll;
     }//FUN
 
-    public void addChatBox(ModelMessage message, ChatBox.BoxType type) {
+    public void addChatBox(ChatMessage message, ChatBox.BoxType type) {
         int values = scrollBody.getVerticalScrollBar().getValue();
         if (type == ChatBox.BoxType.LEFT) {
             body.add(new ChatBox(type, message), "width ::80%");
         } else {
             body.add(new ChatBox(type, message), "al right,width ::80%");
-        }
+        }//IF
+        
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -228,6 +233,7 @@ public class ChatArea extends JPanel {
                 bottom.revalidate();
             }
         });
+        
         body.repaint();
         body.revalidate();
         scrollBody.revalidate();
@@ -255,7 +261,13 @@ public class ChatArea extends JPanel {
             event.mousePressedFileButton(evt);
         }//FOR
     }//FUN
-
+    
+    private void runEventMousePressedAsciiButton(ActionEvent evt) {
+        for (ChatEvent event : events) {
+            event.mousePressedAsciiButton(evt);
+        }//FOR
+    }//FUN
+    
     private void runEventKeyTyped(KeyEvent evt) {
         for (ChatEvent event : events) {
             event.keyTyped(evt);

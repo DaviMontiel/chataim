@@ -29,8 +29,11 @@ public class DataBase {
 	private final String URL ="jdbc:mysql://containers-us-west-39.railway.app:6254/railway";
 	private final String DRIVER ="com.mysql.cj.jdbc.Driver";
 	
-	public static enum APP {
-		URL_EMAIL_VERIFICATION_CODE, URL, URL_TERMS_AND_CODITIONS};
+	public static enum APP{
+		URL_EMAIL_VERIFICATION_CODE,
+		URL,
+		URL_TERMS_AND_CODITIONS
+	};
 	
 	
 	public DataBase() {
@@ -301,23 +304,53 @@ public class DataBase {
 			
 			return rs.getBoolean(1);
 		}//TRY
-		catch (SQLException e) {e.printStackTrace();}//CATCH
-		
-		return false;
+		catch (SQLException e) { return false; }//CATCH
 	}//FUN
 	
-	public void sendFile() {
-		
+	public boolean sendFile(int chat, ChatMessage message, int to, boolean addToQueue) {
+		try {
+			String selectSQL ="SELECT sendMessageFile(?,?,?,?,?,?)";
+			PreparedStatement ps = con.prepareStatement(selectSQL);
+			
+			ps.setBinaryStream(1, ImageController.convertToInputStream(message.getImage(), "png"));
+			ps.setTimestamp(2, message.getSend());
+			ps.setInt(3, chat);
+			ps.setInt(4, message.getContact().getId());
+			ps.setInt(5, to);
+			ps.setBoolean(6, addToQueue);
+			
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			
+			return rs.getBoolean(1);
+		}//TRY
+		catch (SQLException e) { return false; }//CATCH
 	}//FUN
 	
-	public void sendAsscii() {
-		
+	public boolean sendAscii(int chat, ChatMessage message, int to, boolean addToQueue) {
+		try {
+			String selectSQL ="SELECT sendMessageAscii(?,?,?,?,?,?)";
+			PreparedStatement ps = con.prepareStatement(selectSQL);
+			
+			ps.setInt(1, message.getIdAscii());
+			ps.setTimestamp(2, message.getSend());
+			ps.setInt(3, chat);
+			ps.setInt(4, message.getContact().getId());
+			ps.setInt(5, to);
+			ps.setBoolean(6, addToQueue);
+			
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			
+			return rs.getBoolean(1);
+		}//TRY
+		catch (SQLException e) { return false; }//CATCH
 	}//FUN
 	
 	public ChatMessage[] getAllMessagesOf(Contact contact, Contact currentContact) {
 		ChatMessage[] messages = null;
 		try {
-			String sql = "SELECT id, content, IF(file IS NULL, false, true), send, id_contact, IF (id_ascii IS NULL, false, true) FROM message WHERE id_chat = "+contact.getChat()+";";
+			String sql = "SELECT id, content, file, send, id_contact, id_ascii, id_chat FROM message WHERE id_chat = "+contact.getChat()+";";
 			Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
 			ResultSet rs = st.executeQuery(sql);
@@ -341,13 +374,26 @@ public class DataBase {
 		    		}//IF
 		    		
 		    		// CREATE MESSAGE
-		    		ChatMessage message = new ChatMessage(
+		    		ChatMessage message = null;
+		    		if (rs.getString(2) != null) {
+		    			message = new ChatMessage(
 		    				rs.getInt(1),
 		    				rs.getString(2),
-		    				rs.getBoolean(3),
-		    				rs.getTimestamp(4),
-		    				rs.getBoolean(6)
+		    				rs.getTimestamp(4)
 		    				);
+		    		} else if (rs.getBlob(3) != null) {
+		    			message = new ChatMessage(
+		    				rs.getInt(1),
+		    				ImageController.convertToImage(rs.getBlob(3).getBinaryStream()),
+		    				rs.getTimestamp(4)
+		    				);
+		    		} else {
+		    			message = new ChatMessage(
+		    				rs.getInt(1),
+		    				rs.getInt(6),
+		    				rs.getTimestamp(4)
+		    				);
+		    		}//IF
 					message.setContact(auxContact);
 		    		
 					// ADD TO THE LIST
@@ -360,15 +406,13 @@ public class DataBase {
 			
 			return messages;
 		}//TRY
-		catch (SQLException xp) { System.out.println(xp.toString()); }//CATCH
-		
-		return null;
+		catch (SQLException xp) { return null; }//CATCH
 	}//FUN
 	
 	public ChatMessage[] getMessagesOf(int idContact) {
 		ChatMessage[] messages = null;
 		try {
-			String sql = "SELECT id, content, IF(file IS NULL, false, true), send, id_contact, IF (id_ascii IS NULL, false, true), id_chat"
+			String sql = "SELECT id, content, file, send, id_contact, id_ascii, id_chat"
 					+ " FROM message"
 					+ " WHERE EXISTS("
 					+ "SELECT * FROM messaging_queue WHERE message.id = messaging_queue.id_message AND messaging_queue.id_contact = "+idContact
@@ -387,14 +431,28 @@ public class DataBase {
 		    	for (int f=0; f<rowCount; f++) {
 		    		rs.next();
 		    		
-		    		// CREATE MESSAGE
-		    		ChatMessage message = new ChatMessage(
+		    		// CREATE TEXT / FILE / ASCII MESSAGE
+		    		ChatMessage message = null;
+		    		if (rs.getString(2) != null) {
+		    			message = new ChatMessage(
 		    				rs.getInt(1),
 		    				rs.getString(2),
-		    				rs.getBoolean(3),
-		    				rs.getTimestamp(4),
-		    				rs.getBoolean(6)
+		    				rs.getTimestamp(4)
 		    				);
+		    		} else if (rs.getBlob(3) != null) {
+		    			message = new ChatMessage(
+		    				rs.getInt(1),
+		    				ImageController.convertToImage(rs.getBlob(3).getBinaryStream()),
+		    				rs.getTimestamp(4)
+		    				);
+		    		} else {
+		    			message = new ChatMessage(
+		    				rs.getInt(1),
+		    				rs.getInt(6),
+		    				rs.getTimestamp(4)
+		    				);
+		    		}//IF
+		    		
 		    		Contact contact = new Contact();
 		    		contact.setId(rs.getInt(5));
 		    		contact.setChat(rs.getInt(7));
@@ -410,9 +468,7 @@ public class DataBase {
 			
 			return messages;
 		}//TRY
-		catch (SQLException xp) {}//CATCH
-		
-		return null;
+		catch (SQLException xp) { return null; }//CATCH
 	}//FUN
 	
 	private int getRowCount(ResultSet rs) throws SQLException {
@@ -442,6 +498,38 @@ public class DataBase {
 			ps.close();
 		}//TRY
 		catch (SQLException e) { e.printStackTrace(); }//CATCH
+	}//FUN
+	
+	public Object[][] getAsciiList() {
+		Object[][] asciiList = null;
+		try {
+			String sql = "SELECT * FROM ascii";
+			Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+			ResultSet rs = st.executeQuery(sql);
+			
+			// GET ROW COUNT
+			int rowCount = getRowCount(rs);
+		    
+		    if (rowCount != 0) {
+		    	asciiList = new Object[rowCount][2];
+		    	
+				// SAVE MESSAGES
+		    	for (int f=0; f<rowCount; f++) {
+		    		rs.next();
+		    		
+					// ADD TO THE LIST
+		    		asciiList[f][0] = rs.getInt(1);
+		    		asciiList[f][1] = rs.getString(2);
+		    	}//WHILE
+		    }//IF
+			
+			rs.close();
+			st.close();
+			
+			return asciiList;
+		}//TRY
+		catch (SQLException xp) { return null; }//CATCH
 	}//FUN
 
 	// GET IMAGE OF BLOB, OR DEFAULT

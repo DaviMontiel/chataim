@@ -73,7 +73,7 @@ public class ImageController {
 		    try {
 		        baos.close();
 		    }//TRY
-		    catch (Exception e) {}
+		    catch (Exception e) { e.printStackTrace(); }
 		}//FINALLY
 
 		return new ByteArrayInputStream(baos.toByteArray());

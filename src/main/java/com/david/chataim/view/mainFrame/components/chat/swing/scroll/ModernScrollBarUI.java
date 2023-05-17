@@ -18,28 +18,18 @@ public class ModernScrollBarUI extends BasicScrollBarUI {
     private static final int THUMB_SIZE = 8;
     private static final Color THUMB_COLOR = Color.BLACK;
 
-    public ModernScrollBarUI() {
-
-    }
 
     @Override
-    protected JButton createDecreaseButton(int orientation) {
-        return new InvisibleScrollBarButton();
-    }
+    protected JButton createDecreaseButton(int orientation) { return new InvisibleScrollBarButton(); }//FUN
 
     @Override
-    protected JButton createIncreaseButton(int orientation) {
-        return new InvisibleScrollBarButton();
-    }
+    protected JButton createIncreaseButton(int orientation) { return new InvisibleScrollBarButton(); }//FUN
 
     @Override
-    protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
-    }
+    protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {}//FUN
 
     @Override
-    protected Dimension getMinimumThumbSize() {
-        return new Dimension(0, 75);
-    }
+    protected Dimension getMinimumThumbSize() { return new Dimension(0, 75); }//FUN
 
     @Override
     protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
@@ -58,16 +48,19 @@ public class ModernScrollBarUI extends BasicScrollBarUI {
         graphics2D.setColor(new Color(THUMB_COLOR.getRed(), THUMB_COLOR.getGreen(), THUMB_COLOR.getBlue(), alpha));
         graphics2D.fillRect(x, y, width, height);
         graphics2D.dispose();
-    }
+    }//FUN
 
     private static class InvisibleScrollBarButton extends JButton {
 
-        private InvisibleScrollBarButton() {
+        private static final long serialVersionUID = 1L;
+        
+
+		private InvisibleScrollBarButton() {
             setOpaque(false);
             setFocusable(false);
             setFocusPainted(false);
             setBorderPainted(false);
             setBorder(BorderFactory.createEmptyBorder());
-        }
-    }
-}
+        }//Constructor
+    }//CLASS
+}//CLASS

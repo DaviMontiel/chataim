@@ -12,7 +12,7 @@ import com.david.chataim.view.components.ImagePanel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class GetFileWithDialog implements ActionListener {
+public class GetImageWithDialog implements ActionListener {
 	
 	private ImagePanel imagePanel;
 

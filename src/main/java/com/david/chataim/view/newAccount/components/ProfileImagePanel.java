@@ -12,7 +12,7 @@ import com.david.chataim.controller.ImageController;
 import com.david.chataim.controller.LanguageController;
 import com.david.chataim.controller.events.newAccount.CheckFieldsOfNewContact;
 import com.david.chataim.controller.events.newAccount.DragImage;
-import com.david.chataim.controller.events.newAccount.GetFileWithDialog;
+import com.david.chataim.controller.events.newAccount.GetImageWithDialog;
 import com.david.chataim.view.components.ImagePanel;
 import com.david.chataim.view.components.button.Button;
 
@@ -43,7 +43,7 @@ public class ProfileImagePanel extends JPanel {
 		gbc_btnChooseFile.gridy = 1;
 		btnChooseFile = new Button();
 		btnChooseFile.setBackground(Color.gray);
-		btnChooseFile.addActionListener(new GetFileWithDialog(panelImage));
+		btnChooseFile.addActionListener(new GetImageWithDialog(panelImage));
 		btnChooseFile.setText(LanguageController.getWord(32));
 		add(btnChooseFile, gbc_btnChooseFile);
 	}//Constructor

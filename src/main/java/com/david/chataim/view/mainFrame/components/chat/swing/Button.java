@@ -21,33 +21,8 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 
 public class Button extends JButton {
 
-    public boolean isPaintBackground() {
-        return paintBackground;
-    }
-
-    public void setPaintBackground(boolean paintBackground) {
-        this.paintBackground = paintBackground;
-        repaint();
-    }
-
-    public int getRound() {
-        return round;
-    }
-
-    public void setRound(int round) {
-        this.round = round;
-        repaint();
-    }
-
-    public Color getEffectColor() {
-        return effectColor;
-    }
-
-    public void setEffectColor(Color effectColor) {
-        this.effectColor = effectColor;
-        repaint();
-    }
-
+    private static final long serialVersionUID = 1L;
+    
     private Animator animator;
     private int targetSize;
     private float animatSize;
@@ -57,9 +32,20 @@ public class Button extends JButton {
     private Color effectColor = new Color(173, 173, 173);
     private boolean paintBackground;
 
-    public Button() {
-        init();
-    }
+    
+    public Button() { init(); }//Constructor
+    
+	public boolean isPaintBackground() { return paintBackground; }//FUN
+
+    public void setPaintBackground(boolean paintBackground) {
+        this.paintBackground = paintBackground;
+        repaint();
+    }//FUN
+
+    public void setRound(int round) {
+        this.round = round;
+        repaint();
+    }//FUN
 
     private void init() {
         setContentAreaFilled(false);
@@ -74,26 +60,29 @@ public class Button extends JButton {
                     animatSize = 0;
                     pressedPoint = me.getPoint();
                     alpha = 0.5f;
+                    
                     if (animator.isRunning()) {
                         animator.stop();
-                    }
+                    }//IF
+                    
                     animator.start();
-                }
+                }//IF
             }
         });
+        
         TimingTarget target = new TimingTargetAdapter() {
             @Override
             public void timingEvent(float fraction) {
                 if (fraction > 0.5f) {
                     alpha = 1 - fraction;
-                }
+                }//IF
                 animatSize = fraction * targetSize;
                 repaint();
             }
         };
         animator = new Animator(400, target);
         animator.setResolution(0);
-    }
+    }//FUN
 
     @Override
     protected void paintComponent(Graphics grphcs) {
@@ -101,18 +90,21 @@ public class Button extends JButton {
         int height = getHeight();
         Graphics2D g2 = (Graphics2D) grphcs.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
         if (paintBackground) {
             g2.setColor(getBackground());
             g2.fillRoundRect(0, 0, width, height, round, round);
-        }
+        }//IF
+        
         if (pressedPoint != null) {
             Area area = new Area(new RoundRectangle2D.Double(0, 0, width, height, round, round));
             g2.setColor(effectColor);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
             area.intersect(new Area(new Ellipse2D.Double((pressedPoint.x - animatSize / 2), (pressedPoint.y - animatSize / 2), animatSize, animatSize)));
             g2.fill(area);
-        }
+        }//IF
+        
         g2.dispose();
         super.paintComponent(grphcs);
-    }
-}
+    }//PAINT
+}//CLASS

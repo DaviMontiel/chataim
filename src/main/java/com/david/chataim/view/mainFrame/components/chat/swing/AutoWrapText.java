@@ -14,13 +14,13 @@ import javax.swing.text.ViewFactory;
 
 public class AutoWrapText extends StyledEditorKit {
 
-    @Override
-    public ViewFactory getViewFactory() {
-        return new WarpColumnFactory();
-    }
+    private static final long serialVersionUID = 1L;
+    
+    
+	@Override
+    public ViewFactory getViewFactory() { return new WarpColumnFactory(); }//FUN
 
     private class WarpColumnFactory implements ViewFactory {
-
         @Override
         public View create(Element elmnt) {
             String kind = elmnt.getName();
@@ -35,17 +35,17 @@ public class AutoWrapText extends StyledEditorKit {
                     return new ComponentView(elmnt);
                 } else if (kind.equals(StyleConstants.IconElementName)) {
                     return new IconView(elmnt);
-                }
-            }
+                }//IF
+            }//IF
+            
             return new LabelView(elmnt);
-        }
-    }
+        }//EVENT
+    }//CLASS
 
     private class WarpLabelView extends LabelView {
-
-        public WarpLabelView(Element elem) {
-            super(elem);
-        }
+    	
+        public WarpLabelView(Element elem) { super(elem); }//Constructor
+        
 
         @Override
         public float getMinimumSpan(int axis) {
@@ -56,7 +56,7 @@ public class AutoWrapText extends StyledEditorKit {
                     return super.getMinimumSpan(axis);
                 default:
                     throw new IllegalArgumentException("Invalid Axis:" + axis);
-            }
-        }
-    }
-}
+            }//SWITCH
+        }//FUN
+    }//CLASS
+}//CLASS

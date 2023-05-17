@@ -1,19 +1,20 @@
 > # CHATAIM 
-> Realizado hasta el 2023/05/11:
+> Realizado hasta el 2023/05/17:
 
 > #### Modelo
 > - Modificacion del Modelo Endidad-Relacion.
 > - Modificacion del Modelo Fisico.
-> - Creacion de funciones y eventos para la creacion de contactos.
-> - Control en tiempo real los mensajes nuevos.
+> - Creacion de funciones y eventos para la creacion de nuevos tipos de mensajes.
+> - Nuevos tipos de contructor para el mensajes (para las imagenes, y los emojis).
+> - Control en tiempo real los nuevos tipos de mensajes.
 
 > #### Vista
-> - Visualizacion de contactos en tiempo real.
-> - Visualizacion de chat.
-> - Visualizacion de mensajes en tiempo real.
+> - Visualizacion de los nuevos mensajes en tiempo real.
+> - Visualizacion de menu, para seleccionar imagen a enviar.
+> - Visualizacion de menu en chat, para seleccionar emoji Ascii.
 
 > #### Controlador
-> - Controlar mensajes de la pila de mensajeria.
 > - Esta comentada el metodo para enviar correos electronicos (Para pruebas).
 > - Se "setea" el codigo de verificacion en el evento "CheckVerificationCode" (Para pruebas).
-> - Identificacion de mensajes con su contacto asignado en la lista correspondiente.
+> - Identificacion de los distintos tipos de mensajes.
+> - Recogida de emojis Ascii del server.
