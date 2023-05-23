@@ -14,8 +14,6 @@ public class Main {
 		catch (Exception e) {e.printStackTrace();}//CATCH
 		
 		SwingUtilities.invokeLater(() -> {
-			Controller.s().init();
-			
 			LoginFrame frame = new LoginFrame();
 			Controller.s().setCurrentFrame(frame);
 			Controller.s().setMessagePanel(frame.getPanelHeader());

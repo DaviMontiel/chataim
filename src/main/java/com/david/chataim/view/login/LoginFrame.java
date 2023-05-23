@@ -35,6 +35,7 @@ public class LoginFrame extends JFrame {
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(Dimens.LOGIN_W, Dimens.LOGIN_H);
+		setIconImage(new ImageIcon(getClass().getResource(ImageController.LOGO)).getImage());
 		
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.white);

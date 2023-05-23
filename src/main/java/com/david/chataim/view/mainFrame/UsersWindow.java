@@ -57,9 +57,8 @@ public class UsersWindow extends JFrame {
 	private void initComponents(Contact contact) {
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		setSize(Dimens.WINDOW_W_PRE, Dimens.WINDOW_H_PRE);
-//		setPreferredSize(new Dimension(Dimens.WINDOW_W_PRE, Dimens.WINDOW_H_PRE));
 		setBounds(0, 0, Dimens.WINDOW_W_PRE, Dimens.WINDOW_H_PRE);
+		setIconImage(new ImageIcon(getClass().getResource(ImageController.LOGO)).getImage());
 		setLocationRelativeTo(null);
 		
 		// BORDER PANEL
@@ -170,5 +169,12 @@ public class UsersWindow extends JFrame {
     	// STABLISHED NEW DIMENS OF CHAT PANEL
     	panelChat.setPreferredSize(new Dimension(newWidth - panelSearch.getWidth(), 0));
         contentPane.revalidate();
+	}//FUN
+	
+	public void disposeChat() {
+		if (panelChat != null) {
+			remove(panelChat);
+			this.panelChat = null;	
+		}//IF
 	}//FUN
 }//CLASS

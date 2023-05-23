@@ -18,9 +18,11 @@ import javax.swing.ImageIcon;
 public class ImageController {
 
 	// PROYECT
-	public static final String PATH_P ="src/main/java";
 	public static final String PATH_I ="/com/david/chataim/view/images/";
 	public static final String PATH_G ="gif/";
+	
+	public static final String LOGO = PATH_I+"TrayIcon.png";
+	public static final String TRAYICON = LOGO;
 	
 	
 	// ICONs

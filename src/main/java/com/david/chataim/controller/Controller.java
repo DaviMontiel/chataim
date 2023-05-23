@@ -3,8 +3,11 @@ package com.david.chataim.controller;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -38,6 +41,7 @@ import lombok.Setter;
 public class Controller {
 	
 	private static Controller controller;
+	
 	@Getter private JFrame currentFrame;
 	@Setter private DataBase database;
 	@Setter private JPanel messagePanel;
@@ -50,6 +54,23 @@ public class Controller {
 	private boolean isChekingNewMessages;
 	
 	
+	public Controller() {
+		// LANGUAGE
+		String lang = System.getProperty("user.language");
+		
+		if (lang.equals("es")) {
+			LanguageController.setLanguage(LanguageController.LANGUAGE.ES);
+		} else {
+			LanguageController.setLanguage(LanguageController.LANGUAGE.EN);
+		}//IF
+		
+		// NOTIFICATION
+		try {
+			NotificationController.c();
+		}//TRY
+		catch (Exception e) { e.printStackTrace(); }//CATCH
+	}//Constructor
+	
 	public static Controller s() {
 		if (controller == null) {
 			return controller = new Controller();
@@ -61,16 +82,6 @@ public class Controller {
 	 * GENERAL 
 	 */
 	
-	public void init() {
-		String lang = System.getProperty("user.language");
-		
-		if (lang.equals("es")) {
-			LanguageController.setLanguage(LanguageController.LANGUAGE.ES);
-		} else {
-			LanguageController.setLanguage(LanguageController.LANGUAGE.EN);
-		}//IF
-	}//FUN
-	
 	public void setCurrentFrame(JFrame frame) {
 		this.currentFrame = frame;
 		
@@ -78,25 +89,51 @@ public class Controller {
 		WindowAnimation.openWindowAnimation(frame);
 	}//SET
 	
+	public void minimizeProgram() {
+		if (currentFrame instanceof UsersWindow) {
+			UsersWindow frame = (UsersWindow) currentFrame;
+			frame.disposeChat();
+			
+			closeCurrentFrame(false);
+			currentFrame.setVisible(false);
+		} else {
+			closeCurrentFrame(true);
+		}//IF
+	}//FUN
+	
+	public void showProgram() {
+		if (!currentFrame.isVisible()) {
+			if (currentFrame instanceof LoginFrame) {
+				currentFrame = new LoginFrame();
+				setMessagePanel( ((LoginFrame)currentFrame).getPanelHeader());
+			}//IF
+			
+			WindowAnimation.openWindowAnimation(currentFrame);
+			currentFrame.setVisible(true);
+		}//IF
+	}//FUN
+	
 //	public void restartProgram() {
 //		currentFrame.dispose();
 //		Controller.s().setCurrentFrame(new UsersWindow());
 //		currentFrame.setVisible(true);
 //	}//FUN
 	
-	public void closeCurrentFrame() {
+	public void exitProgram() {
+		if (currentContact != null) setOffline();
+		closeDatabase();
+		
+		closeCurrentFrame(true);
+		System.exit(0);
+	}//FUN
+	
+	private void closeCurrentFrame(boolean dispose) {
 		try {
 			Thread anim = WindowAnimation.closeWindowAnimation(currentFrame);
 			anim.join();
-			currentFrame.dispose();
+			if (dispose) currentFrame.dispose();
 		}//TRY
 		catch (InterruptedException e) {e.printStackTrace();}//CATCH
-	}//FUN
-	
-	public void exitProgram() {
-		closeDatabase();
-		closeCurrentFrame();
-		System.exit(0);
 	}//FUN
 	
 	// INIT CHAT GAP AS FALSE
@@ -107,70 +144,6 @@ public class Controller {
 		
 		Object chatGap = false;
 		chats.put(chat, chatGap);
-	}//FUN
-	
-	public boolean sendMessageTo(int chat, ChatMessage message, int to) {
-		// CHECK IF IS FOR ME
-		boolean addToQueue = isForMeMessage(to);
-		
-		// SEND MESSAGE
-		boolean wasSent = database.sendMessage(chat, message, to, addToQueue);
-		
-		// SAVE MESSAGE IN LIST
-		if (wasSent) {
-			saveMessageInList(chat, new ChatMessage[] {message});
-		}//IF
-		
-		return wasSent;
-	}//FUN
-	
-	public boolean sendImageTo(int chat, ChatMessage message, int to) {
-		// CHECK IF IS FOR ME
-		boolean addToQueue = isForMeMessage(to);
-		
-		// SHOW DIALOG
-		JProgressBar progressBar = new JProgressBar(0, 100);
-        progressBar.setStringPainted(true);
-        
-		JOptionPane optionPane = new JOptionPane(progressBar, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION);
-		JDialog dialog = optionPane.createDialog(LanguageController.getWord(49));
-		new Thread() {
-    		@Override
-    		public void run() {    	        
-    	        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-    	        dialog.setModal(true);
-    	        dialog.setVisible(true);
-    		}
-    	}.start();
-		
-		// SEND FILE
-		boolean wasSent = database.sendFile(chat, message, to, addToQueue);
-		
-		// SAVE MESSAGE IN LIST
-		if (wasSent) {
-			progressBar.setValue(100);
-			saveMessageInList(chat, new ChatMessage[] {message});
-		}//IF
-		
-		dialog.setVisible(false);
-		dialog.dispose();
-		
-		return wasSent;
-	}//FUN
-	
-	public boolean sendAsciiTo(int chat, ChatMessage message, int to) {
-		// CHECK IF IS FOR ME
-		boolean addToQueue = isForMeMessage(to);
-		
-		// SEND MESSAGE
-		boolean wasSent = database.sendAscii(chat, message, to, addToQueue);
-		
-		// SAVE MESSAGE IN LIST
-		if (wasSent) {
-			saveMessageInList(chat, new ChatMessage[] {message});
-		}//IF
-		
-		return wasSent;
 	}//FUN
 	
 	private boolean isForMeMessage(int to) { if (to == currentContact.getId()) return false; else return true; }//FUN
@@ -263,6 +236,20 @@ public class Controller {
 		return database.existAccount(email, passwd);
 	}//FUN
 	
+	// SET ONLINE THE CURRENT USER IN DATABASE
+	private void setOnline() {
+		new Thread() {
+			@Override
+			public void run() {
+				database.setUserState(currentContact.getId(), true);
+			}
+		}.start();
+	}//FUN
+	
+	private void setOffline() {
+		database.setUserState(currentContact.getId(), false);
+	}//FUN
+	
 	private String getVerificationURL() {
 		if (LanguageController.getLanguage() == LANGUAGE.ES) {
 			return database.getFromApp(DataBase.APP.URL_EMAIL_VERIFICATION_CODE, "ES");
@@ -345,13 +332,18 @@ public class Controller {
 		if (!isChekingNewMessages) {
 			isChekingNewMessages = true;
 			
+			UsersWindow frame = (UsersWindow) currentFrame;
+			
 			// CKECK FOREVER IF HAVE MESSAGEs
 			new Thread() {
 				@Override
 				public void run() {
 					while(true) {
 						// CKECK SERVER LIST
-						Controller.s().getMessagingQueue();
+						getMessagingQueue();
+						
+						// CHECK USERS STATUS
+						if (frame.getPanelChat() != null) getStatusOf(frame.getPanelChat().getContact());
 						
 						// SLEEP
 						try { Thread.sleep(1000); }//TRY
@@ -363,7 +355,7 @@ public class Controller {
 	}//FUN
 
 	// GET MESSAGES OF MESSAGING_QUEUE
-	public void getMessagingQueue() {
+	private void getMessagingQueue() {
 		// GET MESSAGES
 		ChatMessage[] messages = database.getMessagesOf(currentContact.getId());
 		
@@ -415,7 +407,15 @@ public class Controller {
 					
 					// SEND NOTIFICATION
 					if (!currentFrame.isVisible()) {
-						// TODO
+						String text ="";
+						if (messagesToSave[f].getText() != null) {
+							text = messagesToSave[f].getText();
+						} else if (messagesToSave[f].getImage() != null) {
+							text = "[IMAGE]";
+						} else {
+							text = Controller.s().getAscii(messagesToSave[f].getIdAscii());
+						}//IF
+						NotificationController.c().displayMessage(contactFound.getOriginalName(), text);
 					}//IF
 				}//FOR
 				
@@ -437,21 +437,105 @@ public class Controller {
 				for (int f=0; f<entry.getValue().size(); f++) {
 					array[f] = entry.getValue().get(f);
 					
+					boolean sendNotification = true;
 					// SHOW MESSAGE IN CHAT
 					if (panelChat != null) {
 						if (array[f].getContact().getChat() == panelChat.getContact().getChat()) {
-							if (panelChat != null) {
-								panelChat.addMessage(array[f]);
-							}//IF
-						} else {
-							// SEND NOTIFICATION
-							// TODO
+							panelChat.addMessage(array[f]);
+							sendNotification = false;
 						}//IF
 					}//IF
+					
+					if (sendNotification) {
+						// SEND NOTIFICATION
+						String text ="";
+						if (array[f].getText() != null) {
+							text = array[f].getText();
+						} else if (array[f].getImage() != null) {
+							text = "[IMAGE]";
+						} else {
+							text = Controller.s().getAscii(array[f].getIdAscii());
+						}//IF
+						NotificationController.c().displayMessage(entry.getKey().getOriginalName(), text);
+					}//IF
 				}//FOR
+				
 				addMessagesToList(entry.getKey().getChat(), entry.getValue().toArray(array));
 			}//FOR
 		}//IF
+	}//FUN
+	
+	private void getStatusOf(Contact contact) {
+		if (contact != null) {
+//			System.out.println("ENTRA");
+			if (!contact.isConnected()) {
+				
+			}//IF
+		}//IF
+	}//V
+	
+	public boolean sendMessageTo(int chat, ChatMessage message, int to) {
+		// CHECK IF IS FOR ME
+		boolean addToQueue = isForMeMessage(to);
+		
+		// SEND MESSAGE
+		boolean wasSent = database.sendMessage(chat, message, to, addToQueue);
+		
+		// SAVE MESSAGE IN LIST
+		if (wasSent) {
+			saveMessageInList(chat, new ChatMessage[] {message});
+		}//IF
+		
+		return wasSent;
+	}//FUN
+	
+	public boolean sendImageTo(int chat, ChatMessage message, int to) {
+		// CHECK IF IS FOR ME
+		boolean addToQueue = isForMeMessage(to);
+		
+		// SHOW DIALOG
+		JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        
+		JOptionPane optionPane = new JOptionPane(progressBar, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION);
+		JDialog dialog = optionPane.createDialog(LanguageController.getWord(49));
+		new Thread() {
+    		@Override
+    		public void run() {    	        
+    	        dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+    	        dialog.setModal(true);
+    	        dialog.setVisible(true);
+    		}
+    	}.start();
+		
+		// SEND FILE
+		boolean wasSent = database.sendFile(chat, message, to, addToQueue);
+		
+		// SAVE MESSAGE IN LIST
+		if (wasSent) {
+			progressBar.setValue(100);
+			saveMessageInList(chat, new ChatMessage[] {message});
+		}//IF
+		
+		dialog.setVisible(false);
+		dialog.dispose();
+		
+		return wasSent;
+	}//FUN
+	
+	public boolean sendAsciiTo(int chat, ChatMessage message, int to) {
+		// CHECK IF IS FOR ME
+		boolean addToQueue = isForMeMessage(to);
+		
+		// SEND MESSAGE
+		boolean wasSent = database.sendAscii(chat, message, to, addToQueue);
+		
+		// SAVE MESSAGE IN LIST
+		if (wasSent) {
+			saveMessageInList(chat, new ChatMessage[] {message});
+		}//IF
+		
+		return wasSent;
 	}//FUN
 	
 	private void fillAsciiList() {
@@ -547,44 +631,36 @@ public class Controller {
 	}//FUN
 	
 	private boolean sendVerificationEmail(String email, int verificationCode) {
-//		// GET URL FROM DATABASE
-//		String urlEmail = getVerificationURL();
-//		
-//		// GET WEB PAGE CODE
-//		String emailCode ="";
-//		while (emailCode.isEmpty()) {
-//			try {
-//	        	URL url = new URL(urlEmail);
-//	            URLConnection conexionURL = url.openConnection();
-//	            InputStream is = conexionURL.getInputStream();
-//	            int c = 0;
-//
-//	            while ((c = is.read()) != -1) {
-//	            	emailCode += (char) c;
-//	            }//WHILE
-//	            
-//	            // SET CODE INTO HTML CODE
-//	            emailCode = emailCode.replace("HERE_CODE", String.valueOf(verificationCode));
-//	            
-//	            is.close();
-//			}//TRY
-//			catch (Exception e) { Controller.s().showMessage(Message.MessageType.WARNING, LanguageController.getWord(24)); }//CATCH
-//		}//WHILE
-//		
-//		// SEND MAIL
-//		return Mail.send(email, LanguageController.getWord(23), emailCode);
-		return true;
+		// GET URL FROM DATABASE
+		String urlEmail = getVerificationURL();
+		
+		// GET WEB PAGE CODE
+		String emailCode ="";
+		while (emailCode.isEmpty()) {
+			try {
+	        	URL url = new URL(urlEmail);
+	            URLConnection conexionURL = url.openConnection();
+	            InputStream is = conexionURL.getInputStream();
+	            int c = 0;
+
+	            while ((c = is.read()) != -1) {
+	            	emailCode += (char) c;
+	            }//WHILE
+	            
+	            // SET CODE INTO HTML CODE
+	            emailCode = emailCode.replace("HERE_CODE", String.valueOf(verificationCode));
+	            
+	            is.close();
+			}//TRY
+			catch (Exception e) { Controller.s().showMessage(Message.MessageType.WARNING, LanguageController.getWord(24)); }//CATCH
+		}//WHILE
+		
+		// SEND MAIL
+		return Mail.send(email, LanguageController.getWord(23), emailCode);
+//		return true;
 	}//FUN
 	
-	public void changeToFrameContactChats() {
-		closeCurrentFrame();
-		
-		try {
-			Thread.sleep(500);
-		}//TRY
-		catch (InterruptedException e) { e.printStackTrace(); }//CATCH
-		
-		// SHOW PROFILE FRAME
+	private UsersWindow showFrameContactChats() {
 		UsersWindow frame = new UsersWindow(currentContact);
 		
 		// SET FRAME RESIZABLE
@@ -596,6 +672,20 @@ public class Controller {
         
 		setCurrentFrame(frame);
 		setMessagePanel(frame.getPanelBorder());
+		
+		return frame;
+	}//FUN
+	
+	public void changeToFrameContactChats() {
+		closeCurrentFrame(true);
+		
+		try {
+			Thread.sleep(500);
+		}//TRY
+		catch (InterruptedException e) { e.printStackTrace(); }//CATCH
+		
+		// SHOW PROFILE FRAME
+		UsersWindow frame = showFrameContactChats();
 		
 		// GET CONTACTs
 		contacts = getContacts();
@@ -613,6 +703,9 @@ public class Controller {
 		// GET ASCII CHARACTERs
 		fillAsciiList();
 		
+		// SET ONLINE
+		setOnline();
+		
 		// LOOP
 		checkForNewMessages();
 	}//FUN
@@ -622,7 +715,7 @@ public class Controller {
 	 */
 	
 	public void changeToFrameCreateAccount(Register register) {
-		closeCurrentFrame();
+		closeCurrentFrame(true);
 		
 		try {
 			Thread.sleep(500);
@@ -651,14 +744,11 @@ public class Controller {
 	 * CHAT
 	 */
 	
-	private boolean isChatCreated;
-	
 	public void showChat(Contact contact) {
 		UsersWindow frame = (UsersWindow) currentFrame;
 		ChatPanel panelChat = frame.getPanelChat();
 		
-		if (panelChat == null && !isChatCreated) {
-			isChatCreated = true;
+		if (panelChat == null) {
 			panelChat = new ChatPanel(contact);
 			frame.setPanelChat(panelChat);
 			frame.resizeChat();

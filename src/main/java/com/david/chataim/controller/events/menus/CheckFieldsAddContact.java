@@ -10,8 +10,8 @@ import com.david.chataim.controller.ImageController;
 import com.david.chataim.controller.LanguageController;
 import com.david.chataim.model.Contact;
 import com.david.chataim.view.components.Message;
-import com.david.chataim.view.components.MyTextField;
 import com.david.chataim.view.components.button.Button;
+import com.david.chataim.view.components.textField.MyTextField;
 
 public class CheckFieldsAddContact implements ActionListener {
 

@@ -16,9 +16,9 @@ import com.david.chataim.controller.Controller;
 import com.david.chataim.controller.ImageController;
 import com.david.chataim.controller.LanguageController;
 import com.david.chataim.controller.events.register.CheckFieldsOfRegister;
-import com.david.chataim.view.components.MyPasswordField;
-import com.david.chataim.view.components.MyTextField;
 import com.david.chataim.view.components.button.Button;
+import com.david.chataim.view.components.textField.MyPasswordField;
+import com.david.chataim.view.components.textField.MyTextField;
 
 import lombok.Getter;
 

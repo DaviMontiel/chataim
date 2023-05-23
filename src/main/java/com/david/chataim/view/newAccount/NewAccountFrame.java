@@ -38,6 +38,7 @@ public class NewAccountFrame extends JFrame {
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(Dimens.NEW_ACCOUNT_W, Dimens.NEW_ACCOUNT_H);
+		setIconImage(new ImageIcon(getClass().getResource(ImageController.LOGO)).getImage());
 		
 		JPanel contentPane = new JPanel();
 		contentPane.setBackground(Color.white);

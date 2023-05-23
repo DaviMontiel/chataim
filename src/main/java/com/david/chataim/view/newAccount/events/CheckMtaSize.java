@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.david.chataim.view.components.MyTextArea;
+import com.david.chataim.view.components.textField.MyTextArea;
 
 import lombok.AllArgsConstructor;
 

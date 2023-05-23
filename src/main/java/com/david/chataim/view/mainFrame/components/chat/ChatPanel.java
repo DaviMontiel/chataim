@@ -98,4 +98,8 @@ public class ChatPanel extends JPanel {
     public void removeMessages() {
     	chatArea.clearChatBox();
     }//FUN
+    
+    public void removeContact() {
+    	this.contact = null;
+    }//FUN
 }//CLASS

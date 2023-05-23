@@ -44,7 +44,7 @@ public class ChatBox extends JComponent {
     
     private JLabel createImageLabel(Image image) {
         ImageIcon icon = new ImageIcon(image);
-        Image scaledImage = null;
+        Image scaledImage = icon.getImage();
     	if (icon.getIconWidth() > 400) {
     		scaledImage = icon.getImage().getScaledInstance(400, calcularProporcional(icon.getIconWidth(), icon.getIconHeight(), 400), Image.SCALE_SMOOTH);
     	}//IF

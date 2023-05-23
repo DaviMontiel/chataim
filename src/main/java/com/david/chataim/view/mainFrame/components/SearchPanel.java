@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 import com.david.chataim.controller.ColorController;
 import com.david.chataim.controller.LanguageController;
-import com.david.chataim.view.components.TextField;
+import com.david.chataim.view.components.textField.TextField;
 
 public class SearchPanel extends JPanel {
 

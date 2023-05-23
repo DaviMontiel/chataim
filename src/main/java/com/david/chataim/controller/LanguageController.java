@@ -76,7 +76,14 @@ public class LanguageController {
 		"Escriba un mensaje aqui...",
 		"Subiendo archivo",
 		"fallo al subir mensaje",
-		"fallo al subir imagen"
+		"fallo al subir imagen",
+		
+		"Configuración",
+		"Nombre de usuario:",
+		"Introduzca nombre de usuario",
+		"",
+		"Cerrar Sesión.",
+		"Salir"
 		
 	};
 	
@@ -148,7 +155,10 @@ public class LanguageController {
 		"Write a message here ...",
 		"uploading file",
 		"failed to upload message",
-		"failed to upload image"
+		"failed to upload image",
+		
+		"Configuration",
+		"User Name:"
 		
 	};
 	

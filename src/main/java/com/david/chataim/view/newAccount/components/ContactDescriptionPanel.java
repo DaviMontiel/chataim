@@ -16,8 +16,8 @@ import com.david.chataim.controller.events.ShowMessagePanel;
 import com.david.chataim.controller.events.newAccount.CheckFieldsOfNewContact;
 import com.david.chataim.controller.events.newAccount.ShowTermsAndCoditions;
 import com.david.chataim.view.components.MyCheckBox;
-import com.david.chataim.view.components.MyTextArea;
 import com.david.chataim.view.components.button.Button;
+import com.david.chataim.view.components.textField.MyTextArea;
 import com.david.chataim.view.newAccount.events.CheckMtaSize;
 
 import lombok.Getter;

@@ -15,12 +15,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.david.chataim.controller.LanguageController;
+import com.david.chataim.controller.events.OnlyNumbersTf;
 import com.david.chataim.controller.events.register.CheckVerificationCode;
-import com.david.chataim.controller.events.register.OnlyNumbersTf;
 import com.david.chataim.model.Register;
-import com.david.chataim.view.components.MyTextField;
 import com.david.chataim.view.components.PanelRound;
 import com.david.chataim.view.components.button.ButtonOutLine;
+import com.david.chataim.view.components.textField.MyTextField;
 
 public class VerifyCodePanel extends JPanel {
 

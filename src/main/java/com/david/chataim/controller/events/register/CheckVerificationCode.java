@@ -23,7 +23,6 @@ public class CheckVerificationCode implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int code = Controller.s().getVerificationCode(register.getVerificationCodeId());
-		tf.setText(String.valueOf(code));
 		
 		if (tf.getText().equals(String.valueOf(code))) {
 			// CHANGE FRAME TO CREATE ACCOUNT FRAME

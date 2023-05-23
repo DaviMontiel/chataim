@@ -10,7 +10,8 @@ import com.david.chataim.controller.Controller;
 import com.david.chataim.controller.Dimens;
 import com.david.chataim.controller.events.MouseClicked;
 import com.david.chataim.view.mainFrame.UsersWindow;
-import com.david.chataim.view.mainFrame.components.NewContactPanel;
+import com.david.chataim.view.mainFrame.components.menus.NewConfigurationPanel;
+import com.david.chataim.view.mainFrame.components.menus.NewContactPanel;
 
 public class ShowPanel implements MouseListener {
 	
@@ -59,13 +60,10 @@ public class ShowPanel implements MouseListener {
 			            		break;
 			            		
 			            	case CONFIGURATION_MENU:
-			            		
+			            		showLeftPanel(panel, new NewConfigurationPanel(ShowPanel.this));
 			            		break;
 			            }//SWITCH
 			        }//IF
-			        
-			        // CAN REPEAT THIS
-					show = false;
 				}//IF
 			}
 		}.start();
@@ -102,6 +100,9 @@ public class ShowPanel implements MouseListener {
 		// PUT VISIBILITY OF ANY COMPONENTS
 		Controller.s().quitLeftVisibility(false);
 		Controller.s().getCurrentFrame().repaint();
+		
+        // CAN REPEAT THIS
+		show = false;
 	}//FUN
 	
 	private void move(int move, JPanel newPanel) {

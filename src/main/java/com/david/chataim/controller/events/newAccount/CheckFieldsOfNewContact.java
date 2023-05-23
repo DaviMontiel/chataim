@@ -13,8 +13,8 @@ import com.david.chataim.model.Register;
 import com.david.chataim.view.components.ImagePanel;
 import com.david.chataim.view.components.Message;
 import com.david.chataim.view.components.MyCheckBox;
-import com.david.chataim.view.components.MyTextArea;
 import com.david.chataim.view.components.button.Button;
+import com.david.chataim.view.components.textField.MyTextArea;
 
 import lombok.Setter;
 

@@ -9,6 +9,6 @@ public class ExitMouseListener extends MouseAdapter {
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Controller.s().exitProgram();
+		Controller.s().minimizeProgram();
 	}//EVENT
 }//CLASS
