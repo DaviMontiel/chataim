@@ -41,13 +41,12 @@ public class ShowPanel implements MouseListener {
 			@Override
 			public void run() {
 				if (!show) {
-					show = true;
-					
 					// GET POSITION OF LBL
 					JLabel label = (JLabel) e.getSource();
 					
 					// El mouse ha sido soltado dentro o fuera del JLabel
 			        if (MouseClicked.click(e, label)) {
+			        	show = true;
 			        	JPanel panel = ((UsersWindow) Controller.s().getCurrentFrame()).getPanelBorder();
 			        	
 			            switch (numPanel) {

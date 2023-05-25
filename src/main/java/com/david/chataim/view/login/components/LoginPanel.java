@@ -34,7 +34,7 @@ public class LoginPanel extends JPanel {
 	private JLabel lblForgotPasswd;
 	
 
-	public LoginPanel() {
+	public LoginPanel(String email, String passwd) {
 		setOpaque(false);
 		setLayout(new GridBagLayout());
 
@@ -53,6 +53,7 @@ public class LoginPanel extends JPanel {
 		gbc_mtfEmail.gridx = 0;
 		gbc_mtfEmail.gridy = 1;
 		tfEmail = new MyTextField();
+		tfEmail.setText(email);
 		tfEmail.setPrefixIcon(new ImageIcon(getClass().getResource(ImageController.EMAIL_ICON)));
 		tfEmail.setHint(LanguageController.getWord(11));
 		tfEmail.setPreferredSize(new Dimension(350, 40));
@@ -63,6 +64,7 @@ public class LoginPanel extends JPanel {
 		gbc_mtfPasswd.gridx = 0;
 		gbc_mtfPasswd.gridy = 2;
 		tfPasswd = new MyPasswordField();
+		tfPasswd.setText(passwd);
 		tfPasswd.setPrefixIcon(new ImageIcon(getClass().getResource(ImageController.PASSWD_ICON)));
 		tfPasswd.setHint(LanguageController.getWord(12));
 		tfPasswd.setPreferredSize(new Dimension(350, 40));
@@ -78,9 +80,7 @@ public class LoginPanel extends JPanel {
             public void mouseEntered(MouseEvent evt) {
             	lblForgotPasswd.setForeground(Color.blue);
             }
-        });
-
-		lblForgotPasswd.addMouseListener(new MouseAdapter() {
+            
             public void mouseExited(MouseEvent evt) {
             	lblForgotPasswd.setForeground(Color.black);
             }
@@ -104,15 +104,21 @@ public class LoginPanel extends JPanel {
 					try { Thread.sleep(500); }//TRY
 					catch (Exception e) {}//CATCH
 				}//WHILE
+				
 				btnSingIn.setIcon(null);
 				btnSingIn.setText(LanguageController.getWord(9));
 				btnSingIn.addActionListener(new CheckFieldsSingIn(LoginPanel.this));
+				
+				// LOGIN
+				if (!email.isEmpty() && !passwd.isEmpty()) {
+					btnSingIn.doClick();
+				}//IF
 			}
 		}.start();
 
 		btnSingIn.setFocusPainted(false);
-		btnSingIn.setBackground(new Color(7, 164, 121));
-		btnSingIn.setForeground(new Color(250, 250, 250));
+		btnSingIn.setBackground(ColorController.PRIMARY_COLOR);
+		btnSingIn.setForeground(ColorController.LOGIN_TF_FOREGROUND);
   		add(btnSingIn, gbc_btn);
 	}//Constructor
 }//CLASS

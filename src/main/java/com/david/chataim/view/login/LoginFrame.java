@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.david.chataim.controller.ColorController;
 import com.david.chataim.controller.Dimens;
 import com.david.chataim.controller.ImageController;
 import com.david.chataim.controller.events.ExitMouseListener;
@@ -16,7 +17,6 @@ import com.david.chataim.view.mainFrame.UsersWindow;
 
 import lombok.Getter;
 
-import java.awt.Color;
 import java.awt.Dimension;
 
 public class LoginFrame extends JFrame {
@@ -31,14 +31,14 @@ public class LoginFrame extends JFrame {
 	@Getter private RegisterPanel panelRegister;
 
 
-	public LoginFrame() {
+	public LoginFrame(String email, String passwd) {
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(Dimens.LOGIN_W, Dimens.LOGIN_H);
 		setIconImage(new ImageIcon(getClass().getResource(ImageController.LOGO)).getImage());
 		
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.white);
+		contentPane.setBackground(ColorController.LOGIN_BG);
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 		
@@ -62,7 +62,7 @@ public class LoginFrame extends JFrame {
 		panelHeader.add(lblExit);
 		
 		// LOGIN
-		panelLogin = new LoginPanel();
+		panelLogin = new LoginPanel(email, passwd);
 		panelLogin.setBounds(0, 0, 554, 525);
 		
 		// REGISTER

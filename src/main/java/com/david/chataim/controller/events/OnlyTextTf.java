@@ -15,8 +15,9 @@ public class OnlyTextTf extends KeyAdapter {
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
+		String text = ((JTextField) e.getSource()).getText();
         char c = e.getKeyChar();
-        if (!Character.isLetter(c) || ((JTextField) e.getSource()).getText().length() +1 > max) {
+        if (!Character.isLetter(c) || text.length() +1 > max) {
             e.consume();
         }//IF
     }//EVENT

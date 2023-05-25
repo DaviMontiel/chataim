@@ -25,6 +25,7 @@ import com.david.chataim.controller.events.chat.GetContactMessages;
 import com.david.chataim.controller.events.register.ShowVerifyCodePanel;
 import com.david.chataim.model.Contact;
 import com.david.chataim.model.DataBase;
+import com.david.chataim.model.MyFile;
 import com.david.chataim.model.ChatMessage;
 import com.david.chataim.model.Register;
 import com.david.chataim.view.components.ComponentResizer;
@@ -33,6 +34,7 @@ import com.david.chataim.view.login.LoginFrame;
 import com.david.chataim.view.mainFrame.UsersWindow;
 import com.david.chataim.view.mainFrame.components.ListContactsPanel;
 import com.david.chataim.view.mainFrame.components.chat.ChatPanel;
+import com.david.chataim.view.mainFrame.components.menus.NewConfigurationPanel;
 import com.david.chataim.view.newAccount.NewAccountFrame;
 
 import lombok.Getter;
@@ -54,23 +56,6 @@ public class Controller {
 	private boolean isChekingNewMessages;
 	
 	
-	public Controller() {
-		// LANGUAGE
-		String lang = System.getProperty("user.language");
-		
-		if (lang.equals("es")) {
-			LanguageController.setLanguage(LanguageController.LANGUAGE.ES);
-		} else {
-			LanguageController.setLanguage(LanguageController.LANGUAGE.EN);
-		}//IF
-		
-		// NOTIFICATION
-		try {
-			NotificationController.c();
-		}//TRY
-		catch (Exception e) { e.printStackTrace(); }//CATCH
-	}//Constructor
-	
 	public static Controller s() {
 		if (controller == null) {
 			return controller = new Controller();
@@ -81,6 +66,52 @@ public class Controller {
 	/*
 	 * GENERAL 
 	 */
+	
+	public static boolean isAppRunning() {
+		boolean existsTemp = MyFile.existsTemp();
+		
+		if (!existsTemp) {
+			MyFile.createTemp();
+			return false;
+		}//IF
+		
+		return true;
+	}//BOOL
+	
+	public void runProgram(boolean checkTemp) {
+		// CHECK IF IS RUNNING THE PROGRAM
+		if (!Controller.isAppRunning() || !checkTemp) {
+			// LANGUAGE
+			String lang = System.getProperty("user.language");
+			
+			if (lang.equals("es")) {
+				LanguageController.setLanguage(LanguageController.LANGUAGE.ES);
+			} else {
+				LanguageController.setLanguage(LanguageController.LANGUAGE.EN);
+			}//IF
+			
+			// NOTIFICATION
+			try {
+				NotificationController.c();
+			}//TRY
+			catch (Exception e) { e.printStackTrace(); }//CATCH
+			
+			// SET DATABASE CONNECTION
+			try {
+				Controller.s().setDatabase(new DataBase());
+			}//TRY
+			catch (Exception e) {e.printStackTrace();}//CATCH
+			
+			// GET LOGIN CREDENTIALS
+			String[] credentials = MyFile.getConfig();
+			
+			// SET THEME
+			ColorController.setTheme(credentials[0]);
+			
+			// OPEN VISUAL
+			Controller.s().showLogin(credentials[1], credentials[2]);
+		}//IF
+	}//V
 	
 	public void setCurrentFrame(JFrame frame) {
 		this.currentFrame = frame;
@@ -104,7 +135,7 @@ public class Controller {
 	public void showProgram() {
 		if (!currentFrame.isVisible()) {
 			if (currentFrame instanceof LoginFrame) {
-				currentFrame = new LoginFrame();
+				currentFrame = new LoginFrame("", "");
 				setMessagePanel( ((LoginFrame)currentFrame).getPanelHeader());
 			}//IF
 			
@@ -113,17 +144,21 @@ public class Controller {
 		}//IF
 	}//FUN
 	
-//	public void restartProgram() {
-//		currentFrame.dispose();
-//		Controller.s().setCurrentFrame(new UsersWindow());
-//		currentFrame.setVisible(true);
-//	}//FUN
+	public void restartProgram() {
+		isChekingNewMessages = false;
+		
+		closeCurrentFrame(true);
+		
+		runProgram(false);
+	}//FUN
 	
 	public void exitProgram() {
 		if (currentContact != null) setOffline();
 		closeDatabase();
 		
 		closeCurrentFrame(true);
+		
+		MyFile.deleteTemp();
 		System.exit(0);
 	}//FUN
 	
@@ -199,7 +234,25 @@ public class Controller {
 	
 	public String getAscii(int id) {
 		return ascii.get(id);
-	}//FUN
+	}//V
+	
+	public void updateConfiguration(NewConfigurationPanel panel) {
+		MyFile.setTheme( panel.getMbTheme().isSelected() ? "dark" : "light" );
+		database.updateConfiguration(
+			currentContact.getId(),
+			panel.getMtfName().getText(),
+			panel.getMtfDescription().getText(),
+			panel.getMbAnonymous().isSelected()
+		);
+	}//V
+	
+	public void closeSession() {
+		MyFile.clearCredentials();
+		isChekingNewMessages = false;
+		
+		closeCurrentFrame(true);
+		showLogin("", "");
+	}//V
 	
 	/*
 	 * CONTROLLERS
@@ -338,7 +391,7 @@ public class Controller {
 			new Thread() {
 				@Override
 				public void run() {
-					while(true) {
+					while(isChekingNewMessages) {
 						// CKECK SERVER LIST
 						getMessagingQueue();
 						
@@ -557,6 +610,13 @@ public class Controller {
 	/*
 	 * VIEW
 	 */
+	
+	public void showLogin(String email, String passwd) {
+		LoginFrame frame = new LoginFrame(email, passwd);
+		setCurrentFrame(frame);
+		setMessagePanel(frame.getPanelHeader());
+		frame.setVisible(true);
+	}//V
 	
 	public void showMessage(Message.MessageType messageType, String message) {
 		final int width = 40 + message.length()*8;

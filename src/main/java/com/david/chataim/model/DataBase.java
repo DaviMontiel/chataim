@@ -107,6 +107,7 @@ public class DataBase {
 				contact.setOriginalName(rs.getString(2));
 				contact.setDescription(rs.getString(3));
 				contact.setImage(getImage(rs.getBinaryStream(4)));
+				contact.setAnonymous(rs.getBoolean(5));
 				contact.setLast_connection(rs.getTimestamp(6));
 				contact.setConnected(rs.getBoolean(7));
 				return contact;
@@ -547,4 +548,31 @@ public class DataBase {
 			return ImageController.convertToImage(blob);				
 		}//IF
 	}//FUN
+	
+	public void updateConfiguration(int idUser, String newUserName, String newDescription, boolean isAnonymous) {
+		try {
+			Statement statement = con.createStatement();
+			statement.executeUpdate("UPDATE contact SET name = \""+newUserName+"\", description = \""+newDescription+"\", anonymous = "+isAnonymous+" WHERE id = "+idUser+";");
+		}//TRY
+		catch (SQLException e) { e.printStackTrace(); }//CATCH
+	}//FUN
 }//CLASS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

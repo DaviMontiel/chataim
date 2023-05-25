@@ -81,8 +81,12 @@ public class LanguageController {
 		"Configuración",
 		"Nombre de usuario:",
 		"Introduzca nombre de usuario",
-		"",
+		"Descripcion:",
+		"Introduzca descripcion de la cuenta",
+		"Modo Anonimo:",
+		"Tema Oscuro:",
 		"Cerrar Sesión.",
+		"Aplicar",
 		"Salir"
 		
 	};
@@ -158,7 +162,15 @@ public class LanguageController {
 		"failed to upload image",
 		
 		"Configuration",
-		"User Name:"
+		"User Name:",
+		"Enter username",
+		"Description:",
+		"Enter account description",
+		"Anonymous Mode:",
+		"Dark Theme:",
+		"Log Out.",
+		"Apply",
+		"Exit"
 		
 	};
 	

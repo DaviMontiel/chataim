@@ -9,6 +9,7 @@ import com.david.chataim.controller.Controller;
 import com.david.chataim.controller.ImageController;
 import com.david.chataim.controller.LanguageController;
 import com.david.chataim.model.Contact;
+import com.david.chataim.model.MyFile;
 import com.david.chataim.view.components.Message;
 import com.david.chataim.view.components.button.Button;
 import com.david.chataim.view.login.components.LoginPanel;
@@ -45,6 +46,10 @@ public class CheckFieldsSingIn implements ActionListener {
 						Contact contact = Controller.s().singIn(loginPanel.getTfEmail().getText(), String.valueOf(loginPanel.getTfPasswd().getPassword()));
 						
 						if (contact != null) {
+							// SAVE CREDENTIALS
+							MyFile.setCredentials(loginPanel.getTfEmail().getText(), String.valueOf(loginPanel.getTfPasswd().getPassword()));
+							
+							// CHANGE SCREEN
 							Controller.s().changeToFrameContactChats();
 						} else {
 							Controller.s().showMessage(Message.MessageType.ERROR, LanguageController.getWord(41));

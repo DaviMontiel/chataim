@@ -75,7 +75,6 @@ public class CheckFieldsOfNewContact implements ActionListener {
 		if (!completePattern(descriptionPattern, mtaDescription.getText())) {
 			Controller.s().showMessage(Message.MessageType.ERROR, LanguageController.getWord(39));
 			return false;
-			
 		} else if (!mcbConditions.isSelected()) {
 			Controller.s().showMessage(Message.MessageType.WARNING, LanguageController.getWord(40));
 			return false;

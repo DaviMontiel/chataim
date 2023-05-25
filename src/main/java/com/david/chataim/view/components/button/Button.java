@@ -39,11 +39,8 @@ public class Button extends JButton {
     public Button() {
         setContentAreaFilled(false);
         setBorder(new EmptyBorder(5, 0, 5, 0));
-        setBackground(Color.WHITE);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         setFocusPainted(false);
-		setBackground(new Color(7, 164, 121));
-		setForeground(new Color(250, 250, 250));
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {

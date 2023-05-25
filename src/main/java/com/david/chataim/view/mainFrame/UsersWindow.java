@@ -37,7 +37,7 @@ public class UsersWindow extends JFrame {
 	@Getter private JPanel panelBorder;
 	@Getter private JPanel contentPane;
 	@Getter private HeaderPanel panelHeader;
-	private ButtonPanel btnGroup;
+//	private ButtonPanel btnGroup;
 	private ButtonPanel btnContact;
 	private ButtonPanel btnMenu;
 	private JLabel lblExit;
@@ -90,9 +90,9 @@ public class UsersWindow extends JFrame {
 		panelMenu.add(panelProfile);
 		
 		// GROUP BTN
-		btnGroup = new ButtonPanel(new ImageIcon(getClass().getResource(ImageController.GROUP)).getImage());
-		btnGroup.setBounds(175, 15, 30, 30);
-		panelMenu.add(btnGroup);
+//		btnGroup = new ButtonPanel(new ImageIcon(getClass().getResource(ImageController.GROUP)).getImage());
+//		btnGroup.setBounds(175, 15, 30, 30);
+//		panelMenu.add(btnGroup);
 		
 		// NEW CONTACT BTN
 		btnContact = new ButtonPanel(new ImageIcon(getClass().getResource(ImageController.CHAT)).getImage());
@@ -145,7 +145,7 @@ public class UsersWindow extends JFrame {
 	
 	private void initEvents() {
 		// SHOW PANEL FOR ADD NEW USER
-		btnGroup.addMouseListener(new ShowPanel(ShowPanel.NEW_GROUP));
+//		btnGroup.addMouseListener(new ShowPanel(ShowPanel.NEW_GROUP));
 		btnContact.addMouseListener(new ShowPanel(ShowPanel.NEW_CONTACT));
 		btnMenu.addMouseListener(new ShowPanel(ShowPanel.CONFIGURATION_MENU));
 		

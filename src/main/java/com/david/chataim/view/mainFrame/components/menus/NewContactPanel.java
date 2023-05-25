@@ -30,7 +30,7 @@ public class NewContactPanel extends JPanel {
 	
 	
 	public NewContactPanel(ShowPanel listener) {
-		setBackground(ColorController.TERCIARY_COLOR);
+		setBackground(ColorController.SECONDARY_COLOR);
 		setLayout(null);
 		
 		// EVET 
@@ -63,6 +63,8 @@ public class NewContactPanel extends JPanel {
 		// BTN
 		Button btnAdd = new Button();
 		btnAdd.setText(LanguageController.getWord(44));
+		btnAdd.setBackground(ColorController.PRIMARY_COLOR);
+		btnAdd.setForeground(Color.white);
 		btnAdd.setBounds(tfId.getX()+5, 180, tfId.getWidth()-10, 40);
 		btnAdd.addActionListener(new CheckFieldsAddContact(tfId, closeListener));
 		add(btnAdd);

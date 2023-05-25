@@ -43,6 +43,10 @@ public class NotificationController {
 		catch (Exception e) { return null; }//CATCH
 	}//GET
 	
+	public void dispose() {
+	    systemTray.remove(trayIcon);
+	}//V
+	
 	/*
 	 * CREATE TRAYICON
 	 */
@@ -53,60 +57,13 @@ public class NotificationController {
             // CREATE APPBAR
 			AppBar appBar = new AppBar(trayIcon);
 			appBar.setTitle("Chataim");
-			//appBar.showDisplayMessage("TITULO", "Mensaje", MessageType.INFO);
 			
 			// CREATE MENU
 			AppBarMenu appBarMenu = new AppBarMenu();
-//			appBarMenu.addMenuItem(LanguageController.getWord(57), new ShowDisplayMessage(trayIcon, "About", "", MessageType.NONE));
-			//appBarMenu.addMenuItem("Display", new ShowDisplayMessage("", null, null));
-        	appBarMenu.addMenuItem(LanguageController.getWord(57), new ExitProgram());
+        	appBarMenu.addMenuItem(LanguageController.getWord(61), new ExitProgram());
 
 			appBar.addPopupMenu(appBarMenu);
-			
-			// Create a Listener for the popup message
-//                trayIcon.addActionListener(new ActionListener() {
-//                    public void actionPerformed(ActionEvent e) {
-//                        System.out.println("In here");
-//                        trayIcon.displayMessage("Tester!", "Some action performed", TrayIcon.MessageType.INFO);
-//                       }
-//                      });
-//			tray.add(trayIcon);
-			
-			// Create a pop-up menu components
-//			PopupMenu popup = new PopupMenu();
-//			MenuItem aboutItem = new MenuItem("About");
-//			CheckboxMenuItem cb1 = new CheckboxMenuItem("Set auto size");
-//			CheckboxMenuItem cb2 = new CheckboxMenuItem("Set tooltip");
-//			Menu displayMenu = new Menu("Display");
-//			MenuItem errorItem = new MenuItem("Error");
-//			MenuItem warningItem = new MenuItem("Warning");
-//			MenuItem infoItem = new MenuItem("Info");
-//			MenuItem noneItem = new MenuItem("None");
-//			MenuItem exitItem = new MenuItem("Exit");
-//			
-//			// Close the program for the exitItem
-//			exitItem.addActionListener(new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					System.exit(0);
-//				}
-//			});
-//      
-//			//Add components to pop-up menu
-//			popup.add(aboutItem);
-//			popup.addSeparator();
-//			popup.add(cb1);
-//			popup.add(cb2);
-//			popup.addSeparator();
-//			popup.add(displayMenu);
-//			displayMenu.add(errorItem);
-//			displayMenu.add(warningItem);
-//			displayMenu.add(infoItem);
-//			displayMenu.add(noneItem);
-//			popup.add(exitItem);
-        } else {
-            System.err.println("System tray not supported!");
-        }//IF
+        } else {}//IF
 	}//INIT
 	
 	/*

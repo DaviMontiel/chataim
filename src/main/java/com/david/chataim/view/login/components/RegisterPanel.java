@@ -1,6 +1,5 @@
 package com.david.chataim.view.login.components;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -102,8 +101,8 @@ public class RegisterPanel extends JPanel {
 		}.start();
 		
 		btnLoginUp.setFocusPainted(false);
-		btnLoginUp.setBackground(new Color(7, 164, 121));
-		btnLoginUp.setForeground(new Color(250, 250, 250));
+		btnLoginUp.setBackground(ColorController.PRIMARY_COLOR);
+		btnLoginUp.setForeground(ColorController.LOGIN_TF_FOREGROUND);
   		add(btnLoginUp, gbc_lblbutton);
 	}//Constructor
 	

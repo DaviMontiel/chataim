@@ -1,17 +1,13 @@
 > # CHATAIM 
-> Realizado hasta el 2023/05/23:
+> Realizado hasta el 2023/05/25:
 
 > #### Modelo
-> - Null.
+> - Se ha creado la clase 'MyFile', que permite administrar la configuracion hacerca del fichero 'Config.xml' del usuario/programa.
+> - Se ha creado el fichero de proyecto 'Config.xml' para copiarse en caso de no tenerlo fuera (en la carpeta del programa). 
 
 > #### Vista
-> - Visualizacion de mensajes en el sistema, cuando el usuario esta conectado.
-> - Visualizacion de TrayIcon, en la barra de tareas del sistema.
-> - Visualizacion de boton para cerrar el programa en el TrayIcon.
+> - Visualizacion de menu de configuracion, para cambiar datos de la cuenta de usuario, y/o del programa.
 
 > #### Controlador
-> - Se ha descomentado el metodo para enviar correos electronicos.
-> - Se "dessetea" el codigo de verificacion en el evento "CheckVerificationCode".
-> - Controlador de los mensajes para mostrarlos en el sistema como notificacion.
-> - Identificacion de los distintos tipos de mensajes que salen en la notificacion.
-> - Apertura y cierre del programa en cualquier parte del programa con ayuda del TrayIcon.
+> - Se controla a partir de ahora las instacias del programa (con un maximo de 1), reglado por el fichero '.chataim_temp'.
+> - Al iniciar el programa se tendra en cuenta los datos de login almacenados, para hacer un inicio de la aplicaccion mas rapido.
