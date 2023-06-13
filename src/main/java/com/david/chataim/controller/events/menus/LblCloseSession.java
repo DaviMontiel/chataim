@@ -7,7 +7,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 
 import com.david.chataim.controller.Controller;
-import com.david.chataim.model.MyFile;
 
 public class LblCloseSession extends MouseAdapter {
 

@@ -183,11 +183,7 @@ public class Controller {
 	
 	private boolean isForMeMessage(int to) { if (to == currentContact.getId()) return false; else return true; }//FUN
 	
-	private void saveMessageInList(int chat, ChatMessage[] messages) {
-		if (chats == null) {
-			chats = new LinkedHashMap<Integer, Object>();
-		}//IF
-		
+	private void saveMessageInList(int chat, ChatMessage[] messages, boolean moveUp) {
 		// GET MESSAGES OF CHAT
 		ChatMessage[] oldMessages = (ChatMessage[]) chats.get(chat);
 		
@@ -205,6 +201,9 @@ public class Controller {
 			
 			// UPDATE LIST
 			chats.put(chat, newMessages);
+			
+			// MOVE CHAT PANEL TO UP
+			if (moveUp) PanelContactsController.s().moveChatToUp(chat);
 		} else if (messages != null) {
 			// SET 1 MESSAGE
 			chats.put(chat, messages);
@@ -212,12 +211,21 @@ public class Controller {
 	}//FUN
 
 	// SAVE MESSAGES IN LIST
-	public void addMessagesToList(int chat, ChatMessage[] messages) {
-		saveMessageInList(chat, messages);
+	public void addMessagesToList(int chat, ChatMessage[] messages, boolean moveUp) {
+		saveMessageInList(chat, messages, moveUp);
 	}//FUN
 	
-	public void setListGapReady(int chat) {
-		chats.put(chat, new ChatMessage[] {});
+	public void setListGapReady(int idChat) {
+		chats.put(idChat, new ChatMessage[] {});
+		
+		// CHECK IF ALL CHATS ARE READY
+		boolean allReady = true;
+		for (Object chat: chats.values()) {
+			if (chat instanceof Boolean) allReady = false; break;
+		}//FOR
+
+		// LOOP
+		if (allReady) checkForNewMessages();
 	}//FUN
 	
 	public ChatMessage[] getMessagesOfList(int chatId) {
@@ -264,6 +272,10 @@ public class Controller {
 		currentFrame.validate();
 		currentFrame.repaint();
 	}//FUN
+	
+	public int getContactId() {
+		return currentContact.getId();
+	}//STR
 	
 	/*
 	 * BBDD
@@ -344,10 +356,6 @@ public class Controller {
 	
 	// ADD NEW CONTACT TO THE ADDED LIST WITH CHAT
 	public Contact addNewContact(int idContact) {
-		if (contacts == null) {
-			contacts = new LinkedHashMap<Integer, Contact>();
-		}//IF
-		
 		if (!contacts.containsKey(idContact)) {
 			Contact newContact = database.getContact(idContact);
 			
@@ -370,6 +378,17 @@ public class Controller {
 		return null;
 	}//FUN
 	
+	public boolean deleteContact(int idContact) {
+		// CHECK IF EXISTS
+//		Contact newContact = database.getContact(idContact);
+		
+		if (!contacts.containsKey(idContact)) return false;
+//		if (newContact == null) return false;
+		
+		// DELETE
+		return database.deleteContact(currentContact.getId(), idContact);
+	}//BOOL
+	
 	// GET ALL CONTACTs
 	private LinkedHashMap<Integer, Contact> getContacts() {
 		return database.getContacts(currentContact.getId());
@@ -385,8 +404,6 @@ public class Controller {
 		if (!isChekingNewMessages) {
 			isChekingNewMessages = true;
 			
-			UsersWindow frame = (UsersWindow) currentFrame;
-			
 			// CKECK FOREVER IF HAVE MESSAGEs
 			new Thread() {
 				@Override
@@ -396,7 +413,7 @@ public class Controller {
 						getMessagingQueue();
 						
 						// CHECK USERS STATUS
-						if (frame.getPanelChat() != null) getStatusOf(frame.getPanelChat().getContact());
+//						if (frame.getPanelChat() != null) getStatusOf(frame.getPanelChat().getContact());
 						
 						// SLEEP
 						try { Thread.sleep(1000); }//TRY
@@ -423,6 +440,10 @@ public class Controller {
 			
 			if (contacts == null) {
 				contacts = new LinkedHashMap<Integer, Contact>();
+			}//IF
+			
+			if (chats == null) {
+				chats = new LinkedHashMap<Integer, Object>();
 			}//IF
 			
 			for (int f=0; f<messages.length; f++) {
@@ -473,7 +494,7 @@ public class Controller {
 				}//FOR
 				
 				// SAVE MESSAGES
-				saveMessageInList(contactFound.getChat(), messagesToSave);
+				saveMessageInList(contactFound.getChat(), messagesToSave, false);
 
 				addContactToMenu(contactFound);
 				addNewContact(contactFound.getId());
@@ -513,19 +534,18 @@ public class Controller {
 					}//IF
 				}//FOR
 				
-				addMessagesToList(entry.getKey().getChat(), entry.getValue().toArray(array));
+				addMessagesToList(entry.getKey().getChat(), entry.getValue().toArray(array), true);
 			}//FOR
 		}//IF
 	}//FUN
 	
-	private void getStatusOf(Contact contact) {
-		if (contact != null) {
-//			System.out.println("ENTRA");
-			if (!contact.isConnected()) {
-				
-			}//IF
-		}//IF
-	}//V
+//	private void getStatusOf(Contact contact) {
+//		if (contact != null) {
+//			if (!contact.isConnected()) {
+//				
+//			}//IF
+//		}//IF
+//	}//V
 	
 	public boolean sendMessageTo(int chat, ChatMessage message, int to) {
 		// CHECK IF IS FOR ME
@@ -536,7 +556,7 @@ public class Controller {
 		
 		// SAVE MESSAGE IN LIST
 		if (wasSent) {
-			saveMessageInList(chat, new ChatMessage[] {message});
+			saveMessageInList(chat, new ChatMessage[] {message}, true);
 		}//IF
 		
 		return wasSent;
@@ -567,7 +587,7 @@ public class Controller {
 		// SAVE MESSAGE IN LIST
 		if (wasSent) {
 			progressBar.setValue(100);
-			saveMessageInList(chat, new ChatMessage[] {message});
+			saveMessageInList(chat, new ChatMessage[] {message}, true);
 		}//IF
 		
 		dialog.setVisible(false);
@@ -585,7 +605,7 @@ public class Controller {
 		
 		// SAVE MESSAGE IN LIST
 		if (wasSent) {
-			saveMessageInList(chat, new ChatMessage[] {message});
+			saveMessageInList(chat, new ChatMessage[] {message}, true);
 		}//IF
 		
 		return wasSent;
@@ -646,10 +666,8 @@ public class Controller {
 	}//FUN
 	
 	public void addContactToMenu(Contact contact) {
-//		if (!contacts.containsKey(contact.getId())) {
-			UsersWindow frame = (UsersWindow) currentFrame;
-			frame.getPanelListContacts().addContact(contact);
-//		}//IF
+		UsersWindow frame = (UsersWindow) currentFrame;
+		frame.getPanelListContacts().addContact(contact);
 	}//FUN
 	
 	/*
@@ -739,10 +757,8 @@ public class Controller {
 	public void changeToFrameContactChats() {
 		closeCurrentFrame(true);
 		
-		try {
-			Thread.sleep(500);
-		}//TRY
-		catch (InterruptedException e) { e.printStackTrace(); }//CATCH
+		try { Thread.sleep(500); }//TRY
+		catch (InterruptedException e) {}//CATCH
 		
 		// SHOW PROFILE FRAME
 		UsersWindow frame = showFrameContactChats();
@@ -750,11 +766,17 @@ public class Controller {
 		// GET CONTACTs
 		contacts = getContacts();
 		
+		if (contacts == null) {
+			checkForNewMessages();
+		}//IF
+		
 		if (contacts != null) {
 			ListContactsPanel panelListContacts = frame.getPanelListContacts();
 			for (Map.Entry<Integer, Contact> entry : contacts.entrySet()) {
 				panelListContacts.addContact(entry.getValue());
 			}//FOR
+		} else {
+			contacts = new LinkedHashMap<Integer, Contact>();
 		}//IF
 		
 		// SHOW FRAME
@@ -767,7 +789,7 @@ public class Controller {
 		setOnline();
 		
 		// LOOP
-		checkForNewMessages();
+//		checkForNewMessages();
 	}//FUN
 	
 	/*

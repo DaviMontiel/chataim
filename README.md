@@ -1,13 +1,15 @@
 > # CHATAIM 
-> Realizado hasta el 2023/05/25:
+> Realizado hasta el 2023/06/13:
 
 > #### Modelo
-> - Se ha creado la clase 'MyFile', que permite administrar la configuracion hacerca del fichero 'Config.xml' del usuario/programa.
-> - Se ha creado el fichero de proyecto 'Config.xml' para copiarse en caso de no tenerlo fuera (en la carpeta del programa). 
+> - Se ha arreglado un error final de programa, que consistia en copiar el fichero 'Config.xml' del proyecto hacia el exterior, solucionandolo poniendo el contenido en la clase MyFile. 
 
 > #### Vista
-> - Visualizacion de menu de configuracion, para cambiar datos de la cuenta de usuario, y/o del programa.
+> - Nueva Funcionalidad para poder borrar a los usuarios.
+> - Buscardor de Contactos por nombre.
+> - Visualizar su código (ID) al lado de la foto de perfil.
 
 > #### Controlador
-> - Se controla a partir de ahora las instacias del programa (con un maximo de 1), reglado por el fichero '.chataim_temp'.
-> - Al iniciar el programa se tendra en cuenta los datos de login almacenados, para hacer un inicio de la aplicaccion mas rapido.
+> - Se ha modificado el comportamiento de las funciones "sendMessageText", "sendMessageFile" y "sendMessageAscii".
+> - Se ha creado un controlador para el buscador de contactos.
+> - Borrar usuario de la lista de contactos de propietario.

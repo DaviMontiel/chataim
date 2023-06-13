@@ -8,6 +8,7 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
@@ -20,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 import com.david.chataim.controller.ColorController;
 import com.david.chataim.controller.LanguageController;
 import com.david.chataim.controller.events.chat.ChatEvent;
+import com.david.chataim.controller.events.chat.ShowDescription;
 import com.david.chataim.model.ChatMessage;
 import com.david.chataim.view.mainFrame.components.chat.animation.AnimationFloatingButton;
 import com.david.chataim.view.mainFrame.components.chat.animation.AnimationScroll;
@@ -106,6 +108,15 @@ public class ChatArea extends JPanel {
         animationScroll = new AnimationScroll(body);
         animationFloatingButton = new AnimationFloatingButton(layoutLayered, floatingButton);
     }//FUN
+    
+    public void setUserDescription(String description) {
+    	MouseListener[] mouseListeners = header.getMouseListeners();
+    	for (MouseListener listener : mouseListeners) {
+    	    header.removeMouseListener(listener);
+    	}//FOR
+    	
+    	header.addMouseListener(new ShowDescription(description));
+    }//V
 
     private JPanel createHeader() {
         RoundPanel panel = new RoundPanel();

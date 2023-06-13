@@ -14,14 +14,19 @@ import com.david.chataim.controller.events.ShowChatPanel;
 import com.david.chataim.controller.events.chat.GetContactMessages;
 import com.david.chataim.model.Contact;
 
+import lombok.Getter;
+
 public class ContactPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
 	private ProfilePanel profilePanel;
 	
+	@Getter private String contactName;
+	
 
 	public ContactPanel(Contact contact) {
+		this.contactName = contact.getOriginalName();
 		initComponents(contact);
 		initEvents(contact);
 	}//Constructor

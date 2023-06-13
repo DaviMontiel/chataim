@@ -12,12 +12,14 @@ import com.david.chataim.controller.events.MouseClicked;
 import com.david.chataim.view.mainFrame.UsersWindow;
 import com.david.chataim.view.mainFrame.components.menus.NewConfigurationPanel;
 import com.david.chataim.view.mainFrame.components.menus.NewContactPanel;
+import com.david.chataim.view.mainFrame.components.menus.NewDeleteUserPanel;
 
 public class ShowPanel implements MouseListener {
 	
 	public static final byte NEW_GROUP = 0;
 	public static final byte NEW_CONTACT = 1;
 	public static final byte CONFIGURATION_MENU = 2;
+	public static final byte DELETE_USER = 3;
 	
 	private byte numPanel;
 	private boolean show;
@@ -52,6 +54,10 @@ public class ShowPanel implements MouseListener {
 			            switch (numPanel) {
 			            	case NEW_GROUP:
 			            		
+			            		break;
+			            		
+		            		case DELETE_USER:
+		            			showLeftPanel(panel, new NewDeleteUserPanel(ShowPanel.this));
 			            		break;
 			            		
 			            	case NEW_CONTACT:

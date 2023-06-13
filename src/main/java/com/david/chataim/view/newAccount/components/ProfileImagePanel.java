@@ -43,6 +43,7 @@ public class ProfileImagePanel extends JPanel {
 		gbc_btnChooseFile.gridy = 1;
 		btnChooseFile = new Button();
 		btnChooseFile.setBackground(Color.gray);
+		btnChooseFile.setForeground(Color.white);
 		btnChooseFile.addActionListener(new GetImageWithDialog(panelImage));
 		btnChooseFile.setText(LanguageController.getWord(32));
 		add(btnChooseFile, gbc_btnChooseFile);

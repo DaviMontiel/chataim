@@ -31,6 +31,7 @@ public class ImageController {
 	
 	public static final String INFO = PATH_I+"info.png";
 	public static final String GROUP = PATH_I+"Group.png";
+	public static final String DELETE_USER = PATH_I+"DeleteUser.png";
 	public static final String CHAT = PATH_I+"Chat.png";
 	public static final String VERTICAL_MENU = PATH_I+"VerticalMenu.png";
 	public static final String BACK = PATH_I+"Back.png";

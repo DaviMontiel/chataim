@@ -8,6 +8,8 @@ public class LanguageController {
 	@Getter public static LANGUAGE language;
 	
 	
+	public static final String APP_NAME ="CHATAIM";
+	
 	private static final String[] ES = {
 		"VACIO",
 		"Busca un chat o inicia uno nuevo.",
@@ -87,7 +89,11 @@ public class LanguageController {
 		"Tema Oscuro:",
 		"Cerrar Sesión.",
 		"Aplicar",
-		"Salir"
+		"Salir",
+		
+		"Borrar Contacto",
+		"ELIMINAR",
+		"Descripción: "
 		
 	};
 	
@@ -170,7 +176,11 @@ public class LanguageController {
 		"Dark Theme:",
 		"Log Out.",
 		"Apply",
-		"Exit"
+		"Exit",
+		
+		"Delete Contact",
+		"DELETE",
+		"Description: "
 		
 	};
 	

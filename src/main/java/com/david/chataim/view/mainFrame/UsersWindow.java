@@ -5,8 +5,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import com.david.chataim.controller.ColorController;
+import com.david.chataim.controller.Controller;
 import com.david.chataim.controller.Dimens;
 import com.david.chataim.controller.ImageController;
+import com.david.chataim.controller.LanguageController;
 import com.david.chataim.controller.events.ExitMouseListener;
 import com.david.chataim.controller.events.menus.ShowPanel;
 import com.david.chataim.model.Contact;
@@ -29,6 +31,7 @@ import javax.swing.BoxLayout;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.BorderLayout;
+import java.awt.Color;
 
 public class UsersWindow extends JFrame {
 
@@ -37,7 +40,9 @@ public class UsersWindow extends JFrame {
 	@Getter private JPanel panelBorder;
 	@Getter private JPanel contentPane;
 	@Getter private HeaderPanel panelHeader;
+	private JLabel lblId;
 //	private ButtonPanel btnGroup;
+	private ButtonPanel btnDelete;
 	private ButtonPanel btnContact;
 	private ButtonPanel btnMenu;
 	private JLabel lblExit;
@@ -55,6 +60,7 @@ public class UsersWindow extends JFrame {
 	}//Constructor
 	
 	private void initComponents(Contact contact) {
+		setTitle(LanguageController.APP_NAME);
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, Dimens.WINDOW_W_PRE, Dimens.WINDOW_H_PRE);
@@ -89,10 +95,22 @@ public class UsersWindow extends JFrame {
 		panelProfile.setBounds(25 - panelProfileSize/2, panelMenu.getPreferredSize().height/2 - panelProfileSize/2, panelProfileSize, panelProfileSize);
 		panelMenu.add(panelProfile);
 		
+		// SHOW ID
+		lblId = new JLabel("ID: "+Controller.s().getContactId()+"");
+		lblId.setForeground(Color.white);
+		lblId.setFont(new java.awt.Font(lblId.getFont().getFamily(), java.awt.Font.PLAIN, 14));
+		lblId.setBounds(panelProfile.getX() + 55, panelProfile.getY() + 6, 100, 30);
+		panelMenu.add(lblId);
+		
 		// GROUP BTN
 //		btnGroup = new ButtonPanel(new ImageIcon(getClass().getResource(ImageController.GROUP)).getImage());
 //		btnGroup.setBounds(175, 15, 30, 30);
 //		panelMenu.add(btnGroup);
+		
+		// DELETE BTN
+		btnDelete = new ButtonPanel(new ImageIcon(getClass().getResource(ImageController.DELETE_USER)).getImage());
+		btnDelete.setBounds(175, 15, 30, 30);
+		panelMenu.add(btnDelete);
 		
 		// NEW CONTACT BTN
 		btnContact = new ButtonPanel(new ImageIcon(getClass().getResource(ImageController.CHAT)).getImage());
@@ -133,19 +151,12 @@ public class UsersWindow extends JFrame {
 		scrollPaneContacts.setViewportView(panelListContacts);
 		panelListContacts.setLayout(new BoxLayout(panelListContacts, BoxLayout.Y_AXIS));
 		panelListContacts.setOpaque(false);
-		
-//		panelChat = new JPanel();
-//		panelChat.setPreferredSize(new Dimension(706, 0));
-//		panelChat.setBackground(Color.white);
-//		panelChat.setLayout(new BorderLayout());
-//		contentPane.add(panelChat, BorderLayout.EAST);
-//		
-//		panelChat.add(new JLabel("Texto xD"), BorderLayout.WEST);
 	}//FUN
 	
 	private void initEvents() {
 		// SHOW PANEL FOR ADD NEW USER
 //		btnGroup.addMouseListener(new ShowPanel(ShowPanel.NEW_GROUP));
+		btnDelete.addMouseListener(new ShowPanel(ShowPanel.DELETE_USER));
 		btnContact.addMouseListener(new ShowPanel(ShowPanel.NEW_CONTACT));
 		btnMenu.addMouseListener(new ShowPanel(ShowPanel.CONFIGURATION_MENU));
 		

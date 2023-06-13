@@ -43,7 +43,7 @@ CREATE TABLE contact (
     lastConnection TIMESTAMP NULL,
     isConnected BOOLEAN NOT NULL,
     CONSTRAINT PRIMARY KEY (id)
-);
+) AUTO_INCREMENT = 1000;
 
 CREATE TABLE ggroup (
     id INTEGER AUTO_INCREMENT NOT NULL,
@@ -69,11 +69,11 @@ CREATE TABLE message (
     CONSTRAINT PRIMARY KEY (id, id_contact, id_chat)
 );
 
-CREATE TABLE ascii (
-	id INTEGER AUTO_INCREMENT NOT NULL,
-	content VARCHAR(255) NOT NULL,	
-	CONSTRAINT PRIMARY KEY (id)
-);
+-- CREATE TABLE ascii (
+-- 	id INTEGER AUTO_INCREMENT NOT NULL,
+-- 	content VARCHAR(255) NOT NULL,	
+-- 	CONSTRAINT PRIMARY KEY (id)
+-- );
 
 
 CREATE TABLE belong (
@@ -304,6 +304,41 @@ BEGIN
 END //
 DELIMITER ;
 
+DELIMITER //
+CREATE FUNCTION deleteContact(
+	p_id_propietary INTEGER,
+	p_id_contact INTEGER
+)
+RETURNS BOOLEAN
+NOT DETERMINISTIC
+BEGIN
+	DECLARE v_haveContactPropietary BOOLEAN;
+	DECLARE v_chat INTEGER;
+
+	# GET CHAT
+	SELECT id_chat INTO v_chat FROM added_contact WHERE id_contact_propietary = p_id_propietary AND id_contact_contact = p_id_contact;
+	
+	# DELETE ADDED_CONTACT
+	DELETE FROM added_contact
+	WHERE id_contact_propietary = p_id_propietary AND id_contact_contact = p_id_contact;
+
+	SELECT COUNT(*) > 0 INTO v_haveContactPropietary FROM added_contact WHERE id_contact_propietary = p_id_contact AND id_contact_contact = p_id_propietary;
+	# IF CONTACT_CONTACT DONT HAVE PROPIETARY DELETE CHAT
+	IF NOT (v_haveContactPropietary) THEN
+		# DELETE MESSAGES
+		DELETE FROM message
+		WHERE id_chat = v_chat;
+	
+		# DELETE CHAT
+		DELETE FROM chat
+		WHERE id = v_chat;
+	END IF;
+
+	RETURN TRUE;
+END //
+DELIMITER ;
+
+
 # EVENTO PARA ELIMINAR CODIGO DE VERIFICACION
 -- CREATE EVENT insertion_event
 -- ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 10 MINUTE
@@ -318,19 +353,18 @@ DELIMITER ;
 
 
 # ASCII CHARACTERS
-INSERT INTO ascii (content) VALUES ("(︶︹︶)");
-INSERT INTO ascii (content) VALUES ("¯\_(ツ)_/¯");
-INSERT INTO ascii (content) VALUES ("o/");
-INSERT INTO ascii (content) VALUES ("\_o_/");
-INSERT INTO ascii (content) VALUES ("{\__/}\n(●_●)\n( >🌮 Want a taco?");
-INSERT INTO ascii (content) VALUES ("⊂(◉‿◉)つ");
-INSERT INTO ascii (content) VALUES ("(ㆆ _ ㆆ)");
-INSERT INTO ascii (content) VALUES ("☜(⌒▽⌒)☞");
-INSERT INTO ascii (content) VALUES ("•`_´•");
-INSERT INTO ascii (content) VALUES ("ʕっ•ᴥ•ʔっ");
-INSERT INTO ascii (content) VALUES ("0__#");
-INSERT INTO ascii (content) VALUES ("( 0 _ 0 )");
-INSERT INTO ascii (content) VALUES ("(͡ ° ͜ʖ ͡ °)");
+-- INSERT INTO ascii (content) VALUES ("(ÃƒÂ¯Ã‚Â¸Ã‚Â¶ÃƒÂ¯Ã‚Â¸Ã‚Â¹ÃƒÂ¯Ã‚Â¸Ã‚Â¶)");
+-- INSERT INTO ascii (content) VALUES ("Ãƒâ€šÃ‚Â¯\_(ÃƒÂ£Ã†â€™Ã¢â‚¬Å¾)_/Ãƒâ€šÃ‚Â¯");
+-- INSERT INTO ascii (content) VALUES ("o/");
+-- INSERT INTO ascii (content) VALUES ("\_o_/");
+-- INSERT INTO ascii (content) VALUES ("{\__/}\n(ÃƒÂ¢Ã¢â‚¬â€�Ã¯Â¿Â½_ÃƒÂ¢Ã¢â‚¬â€�Ã¯Â¿Â½)\n( >ÃƒÂ°Ã…Â¸Ã…â€™Ã‚Â® Want a taco?");
+-- INSERT INTO ascii (content) VALUES ("(ÃƒÂ£Ã¢â‚¬Â Ã¢â‚¬Â  _ ÃƒÂ£Ã¢â‚¬Â Ã¢â‚¬Â )");
+-- INSERT INTO ascii (content) VALUES ("ÃƒÂ¢Ã‹Å“Ã…â€œ(ÃƒÂ¢Ã…â€™Ã¢â‚¬â„¢ÃƒÂ¢Ã¢â‚¬â€œÃ‚Â½ÃƒÂ¢Ã…â€™Ã¢â‚¬â„¢)ÃƒÂ¢Ã‹Å“Ã…Â¾");
+-- INSERT INTO ascii (content) VALUES ("ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢`_Ãƒâ€šÃ‚Â´ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢");
+-- INSERT INTO ascii (content) VALUES ("ÃƒÅ Ã¢â‚¬Â¢ÃƒÂ£Ã¯Â¿Â½Ã‚Â£ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÂ¡Ã‚Â´Ã‚Â¥ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ÃƒÅ Ã¢â‚¬ï¿½ÃƒÂ£Ã¯Â¿Â½Ã‚Â£");
+-- INSERT INTO ascii (content) VALUES ("0__#");
+-- INSERT INTO ascii (content) VALUES ("( 0 _ 0 )");
+-- INSERT INTO ascii (content) VALUES ("(Ãƒï¿½Ã‚Â¡ Ãƒâ€šÃ‚Â° Ãƒï¿½Ã…â€œÃƒÅ Ã¢â‚¬â€œ Ãƒï¿½Ã‚Â¡ Ãƒâ€šÃ‚Â°)");
 
 
 

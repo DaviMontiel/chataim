@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import com.david.chataim.controller.ColorController;
 import com.david.chataim.controller.Dimens;
 import com.david.chataim.controller.ImageController;
+import com.david.chataim.controller.LanguageController;
 import com.david.chataim.controller.events.ExitMouseListener;
 import com.david.chataim.controller.events.MoveWindowListener;
 import com.david.chataim.view.login.components.CoverPanel;
@@ -32,6 +33,7 @@ public class LoginFrame extends JFrame {
 
 
 	public LoginFrame(String email, String passwd) {
+		setTitle(LanguageController.APP_NAME);
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(Dimens.LOGIN_W, Dimens.LOGIN_H);

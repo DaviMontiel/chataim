@@ -1,8 +1,7 @@
 package com.david.chataim.model;
 
 import java.io.File;
-import java.net.URL;
-import java.nio.file.Files;
+import java.io.FileWriter;
 import java.util.function.Consumer;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -16,7 +15,7 @@ import org.w3c.dom.Document;
 
 public class MyFile {
 	
-	private static final String MY_CREDENTIALS_FILE ="com/david/chataim/model/Config.xml";
+//	private static final String MY_CREDENTIALS_FILE ="com/david/chataim/model/Config.xml";
 	private static final String CREDENTIALS_FILE ="Config.xml";
 	private static final String TEMP_INSTANCE =".chataim_temp";
 	
@@ -81,9 +80,7 @@ public class MyFile {
 	        DOMSource source = new DOMSource(document);
 	        StreamResult result = new StreamResult(xmlFile);
 	        transformer.transform(source, result);
-	    } catch (Exception e) {
-	        // Manejar la excepción apropiadamente
-	    }
+	    } catch (Exception e) {}
 	}//V
 
 	
@@ -91,12 +88,20 @@ public class MyFile {
         File userFile = new File(CREDENTIALS_FILE);
         if (!userFile.exists()) {
             try {
-            	URL url = ClassLoader.getSystemClassLoader().getResource(MY_CREDENTIALS_FILE);
-            	File originalFile = new File(url.getPath());
-            	
-            	Files.copy(originalFile.toPath(), userFile.toPath());
+            	FileWriter writer = new FileWriter(userFile);
+            	writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
+            			+ "<config>\r\n"
+            			+ "	<theme>light</theme>\r\n"
+            			+ "	<user>\r\n"
+            			+ "		<email></email>\r\n"
+            			+ "		<passwd></passwd>\r\n"
+            			+ "	</user>\r\n"
+            			+ "</config>");
+            	writer.flush();
+            	writer.close();
+//            	JOptionPane.showConfirmDialog(null, ori);
 			}//TRY
-            catch (Exception e) {}
+            catch (Exception e) {System.out.println(e.getMessage());}
         }//IF
 	}//V
 	

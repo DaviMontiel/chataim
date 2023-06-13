@@ -35,6 +35,9 @@ public class ChatPanel extends JPanel {
         
         // SET CONTACT NAME OF TITLE
         setTitle(contact);
+        
+        // SET CONTACT DESCRIPTION TO HEADER
+        chatArea.setUserDescription(contact.getDescription());
 
         GroupLayout background1Layout = new GroupLayout(background);
         background.setLayout(background1Layout);
@@ -72,6 +75,9 @@ public class ChatPanel extends JPanel {
     public void setContact(Contact contact) {
     	this.contact = contact;
     	setTitle(contact);
+    	
+    	// SET CONTACT DESCRIPTION TO HEADER
+        chatArea.setUserDescription(contact.getDescription());
     }//FUN
     
     private void setTitle(Contact title) {
@@ -80,6 +86,8 @@ public class ChatPanel extends JPanel {
         } else {
         	chatArea.setTitle(contact.getOtherName());
         }//IF
+    	
+    	chatArea.setTitle(chatArea.getTitle()+" ("+contact.getId()+")");
     }//SET
     
     public void addMessage(ChatMessage chatMessage) {

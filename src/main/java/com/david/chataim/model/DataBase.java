@@ -15,18 +15,18 @@ import com.david.chataim.controller.ImageController;
 
 public class DataBase {
 
-	public static Connection con;
-	private final String NAMEDB ="chataim";
-	private final String USER ="root";
-	private final String PASSWD ="root123";
-	private final String URL ="jdbc:mysql://localhost:3306/"+NAMEDB;
-	private final String DRIVER ="com.mysql.cj.jdbc.Driver";
-	
 //	public static Connection con;
+//	private final String NAMEDB ="chataim";
 //	private final String USER ="root";
-//	private final String PASSWD ="EIoYXNlWpzmRQ4vWqsal";
-//	private final String URL ="jdbc:mysql://containers-us-west-39.railway.app:6254/railway";
+//	private final String PASSWD ="root123";
+//	private final String URL ="jdbc:mysql://localhost:3306/"+NAMEDB;
 //	private final String DRIVER ="com.mysql.cj.jdbc.Driver";
+	
+	public static Connection con;
+	private final String USER ="root";
+	private final String PASSWD ="EIoYXNlWpzmRQ4vWqsal";
+	private final String URL ="jdbc:mysql://containers-us-west-39.railway.app:6254/railway";
+	private final String DRIVER ="com.mysql.cj.jdbc.Driver";
 	
 	public static enum APP{
 		URL_EMAIL_VERIFICATION_CODE,
@@ -117,6 +117,24 @@ public class DataBase {
 		return null;
 	}//FUN
 	
+	public boolean deleteContact(int idPropietary, int idContact) {
+		try {
+			String selectSQL ="SELECT deleteContact(?,?);";
+			PreparedStatement ps = con.prepareStatement(selectSQL);
+			
+			ps.setInt(1, idPropietary);
+			ps.setInt(2, idContact);
+			
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			
+			return rs.getBoolean(1);
+		}//TRY
+		catch (SQLException e) { e.printStackTrace(); }//CATCH
+		
+		return false;
+	}//BOOL
+	
 	public String getFromApp(final APP data, final String lang) {
 		try {
 			String selectSQL ="SELECT ";
@@ -154,9 +172,8 @@ public class DataBase {
 			rs.next();
 			
 			return rs.getInt(1);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}//CATCH
+		}//TRY
+		catch (SQLException e) { e.printStackTrace(); }//CATCH
 		
 		return -1;
 	}//FUN
@@ -557,22 +574,3 @@ public class DataBase {
 		catch (SQLException e) { e.printStackTrace(); }//CATCH
 	}//FUN
 }//CLASS
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

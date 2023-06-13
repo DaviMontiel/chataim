@@ -1,13 +1,10 @@
 package com.david.chataim.view.login.components;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -31,7 +28,7 @@ public class LoginPanel extends JPanel {
 	private JLabel lblTitle;
 	@Getter private MyTextField tfEmail;
 	@Getter private MyPasswordField tfPasswd;
-	private JLabel lblForgotPasswd;
+//	private JLabel lblForgotPasswd;
 	
 
 	public LoginPanel(String email, String passwd) {
@@ -71,21 +68,21 @@ public class LoginPanel extends JPanel {
 		add(tfPasswd, gbc_mtfPasswd);
 		
 		// FORGOT
-		GridBagConstraints gbc_lblForgotPasswd = new GridBagConstraints();
-		gbc_lblForgotPasswd.insets = new Insets(10, 0, 0, 0);
-		gbc_lblForgotPasswd.gridx = 0;
-		gbc_lblForgotPasswd.gridy = 3;
-		lblForgotPasswd = new JLabel(LanguageController.getWord(13));
-		lblForgotPasswd.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent evt) {
-            	lblForgotPasswd.setForeground(Color.blue);
-            }
-            
-            public void mouseExited(MouseEvent evt) {
-            	lblForgotPasswd.setForeground(Color.black);
-            }
-        });
-		add(lblForgotPasswd, gbc_lblForgotPasswd);
+//		GridBagConstraints gbc_lblForgotPasswd = new GridBagConstraints();
+//		gbc_lblForgotPasswd.insets = new Insets(10, 0, 0, 0);
+//		gbc_lblForgotPasswd.gridx = 0;
+//		gbc_lblForgotPasswd.gridy = 3;
+//		lblForgotPasswd = new JLabel(LanguageController.getWord(13));
+//		lblForgotPasswd.addMouseListener(new MouseAdapter() {
+//            public void mouseEntered(MouseEvent evt) {
+//            	lblForgotPasswd.setForeground(Color.blue);
+//            }
+//            
+//            public void mouseExited(MouseEvent evt) {
+//            	lblForgotPasswd.setForeground(Color.black);
+//            }
+//        });
+//		add(lblForgotPasswd, gbc_lblForgotPasswd);
 		
 		// BTN
 		GridBagConstraints gbc_btn = new GridBagConstraints();

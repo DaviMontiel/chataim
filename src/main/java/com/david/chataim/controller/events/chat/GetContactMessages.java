@@ -20,7 +20,7 @@ public class GetContactMessages {
 				
 				// SET MESSAGES TO THE LIST
 				Controller.s().setListGapReady(contact.getChat());
-				Controller.s().addMessagesToList(contact.getChat(), messages);
+				Controller.s().addMessagesToList(contact.getChat(), messages, false);
 			}
 		}.start();
 	}//FUN

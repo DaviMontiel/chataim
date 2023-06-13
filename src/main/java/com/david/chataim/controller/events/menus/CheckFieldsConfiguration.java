@@ -69,7 +69,7 @@ public class CheckFieldsConfiguration implements ActionListener{
 		}//IF
 		
 		// CHECK
-		if (name.isEmpty() || description.isEmpty()) {
+		if (name.isEmpty()) {
 			Controller.s().showMessage(Message.MessageType.ERROR, LanguageController.getWord(18));
 			return false;
 		} else if (!completePattern(descriptionPattern, description)) {

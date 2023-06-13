@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import com.david.chataim.controller.ColorController;
 import com.david.chataim.controller.LanguageController;
+import com.david.chataim.controller.events.searchPanel.UpdateSearchPanel;
 import com.david.chataim.view.components.textField.TextField;
 
 public class SearchPanel extends JPanel {
@@ -31,6 +32,7 @@ public class SearchPanel extends JPanel {
 		tfSearch.setPlaceHolder(LanguageController.getWord(1));
 		tfSearch.setBounds(10, 11, 274, 39);
 		tfSearch.setFocusable(setFocusable);
+		tfSearch.addKeyListener(new UpdateSearchPanel());
 		add(tfSearch, BorderLayout.NORTH);
 	}//FUN
 	

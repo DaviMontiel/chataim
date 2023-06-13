@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Descargar Chataim</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      text-align: center;
+      margin-top: 100px;
+    }
+    .title {
+      font-size: 48px;
+      color: #333333;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 30px;
+    }
+    .button {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px 40px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 24px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 50px;
+      transition: background-color 0.3s ease;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .button:hover {
+      background-color: #45a049;
+    }
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+    .background-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.1;
+      animation: backgroundAnimation 5s infinite;
+    }
+    @keyframes backgroundAnimation {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-container">
+    <img class="background-image" src="https://firebasestorage.googleapis.com/v0/b/weatherapp-ebff2.appspot.com/o/TrayIcon.png?alt=media&token=59d9d717-2fea-4f34-9bdd-0709ce499727" alt="Fondo">
+  </div>
+  <div class="container">
+    <h1 class="title">Descargar Chataim</h1>
+    <div class="button-container">
+      <a class="button" href="https://firebasestorage.googleapis.com/v0/b/weatherapp-ebff2.appspot.com/o/chataim_installer.exe?alt=media&token=4d457ff4-be5c-47af-aa2b-24ccb6e82dc9" download>Descargar para Windows 10/11 (.exe)</a>
+      <a class="button" style="display: none;" href="ruta_del_archivo_chataim_linux.deb" download>Descargar para Linux (Debian) (.deb)</a>
+    </div>
+  </div>
+</body>
+</html>
