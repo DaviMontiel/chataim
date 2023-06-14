@@ -1,8 +1,7 @@
 > # CHATAIM 
-> Realizado hasta el 2023/06/14: 
-
-> #### Vista
-> - Cada vez que un usuario que mande un mensaje a ti (sin tenerle a el agregado), se pondra el primero de la fila de la lista de contactos.
-
-> #### Controlador
-> - Se ha modificado el comportamiento de las funciones "sendMessageText", "sendMessageFile" y "sendMessageAscii".
+>
+> En la Página Web [Chataim]("https://h6tkxluzxw8nwqic3crz9c.on.drv.tw/pagina/chataim/downloads/"), podrás descargar el instalador para poder disfrutar de esta aplicación.
+>
+> O bien, puedes obtener los instaladores desde este repositorio. Hay 2 versiones en la carpeta "Installers":
+> - Windows (10/11)
+> - Linux (Debian)
