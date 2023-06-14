@@ -498,6 +498,8 @@ public class Controller {
 
 				addContactToMenu(contactFound);
 				addNewContact(contactFound.getId());
+				
+				PanelContactsController.s().moveChatToUp(contactFound.getChat());
 			}//FOR
 			
 			// ADD MESSAGES TO MY LIST

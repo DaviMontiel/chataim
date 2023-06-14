@@ -229,10 +229,7 @@ BEGIN
 
 	# IF IS CONNECTED THE USER, ADD ROW
 	IF (p_addToQueue) THEN
-		SELECT isConnected INTO v_isConnected FROM contact WHERE id = p_to;
-		IF (v_isConnected) THEN
-			INSERT INTO messaging_queue (id_contact, id_message) VALUES (p_to, idMessage);
-		END IF;
+		INSERT INTO messaging_queue (id_contact, id_message) VALUES (p_to, idMessage);
 	
 	END IF;
 	
@@ -261,10 +258,7 @@ BEGIN
 
 	# IF IS CONNECTED THE USER, ADD ROW
 	IF (p_addToQueue) THEN
-		SELECT isConnected INTO v_isConnected FROM contact WHERE id = p_to;
-		IF (v_isConnected) THEN
-			INSERT INTO messaging_queue (id_contact, id_message) VALUES (p_to, idMessage);
-		END IF;
+		INSERT INTO messaging_queue (id_contact, id_message) VALUES (p_to, idMessage);
 	
 	END IF;
 	
@@ -293,10 +287,7 @@ BEGIN
 
 	# IF IS CONNECTED THE USER, ADD ROW
 	IF (p_addToQueue) THEN
-		SELECT isConnected INTO v_isConnected FROM contact WHERE id = p_to;
-		IF (v_isConnected) THEN
-			INSERT INTO messaging_queue (id_contact, id_message) VALUES (p_to, idMessage);
-		END IF;
+		INSERT INTO messaging_queue (id_contact, id_message) VALUES (p_to, idMessage);
 	
 	END IF;
 	
